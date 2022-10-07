@@ -1,25 +1,25 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState, AppThunk } from '../../app/store'
 import * as service from './service'
-import { IMe } from '../../Interfaces/base/IMe'
+import { IOwner } from '../../Interfaces/base/IOwner'
 import { ILogin } from '../../Interfaces/base/ILogin'
 
-export interface meState {
-  value: IMe | null
+export interface ownerState {
+  value: IOwner | null
   status: 'success' | 'loading' | 'failed'
 }
 
-const initialState: meState = {
+const initialState: ownerState = {
   value: null,
   status: 'success',
 }
-export const login = createAsyncThunk('me/login', async (login: ILogin) => {
+export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
   const response = await service.login(login)
   return response
 })
 
-export const meSlice = createSlice({
-  name: 'me',
+export const ownerSlice = createSlice({
+  name: 'owner',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -37,8 +37,8 @@ export const meSlice = createSlice({
   },
 })
 
-export const {} = meSlice.actions
+export const {} = ownerSlice.actions
 
-export const meValue = (state: RootState) => state.me.value
+export const ownerValue = (state: RootState) => state.owner.value
 
-export default meSlice.reducer
+export default ownerSlice.reducer

@@ -5,14 +5,13 @@ import { Login, Artist, Song, Album, User } from '../pages'
 import { MainLayout, EmptyLayout } from '../layouts'
 
 const routes = {
-  home: '/',
   //shoeDetail: '/shoes/@:idShoe',
-  shoeDetail: '/shoes/:shoeId',
+  //shoeDetail: '/shoes/:shoeId',
   login: '/login',
   user: '/user',
   song: '/song',
   album: '/album',
-  artist: '/login',
+  artist: '/artist',
 }
 const publicRoutes = [{ path: routes.login, page: Login, layout: EmptyLayout }]
 const privateRoutes = [

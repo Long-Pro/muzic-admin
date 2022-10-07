@@ -11,9 +11,7 @@ function MainLayout({ children }: { children: JSX.Element }) {
       <Menu />
       <div style={{ flex: 1 }}>
         <Header />
-        <div className={cx('content')}>
-          <Outlet />
-        </div>
+        <div className={cx('content')}>{children}</div>
       </div>
     </div>
   )

@@ -1,3 +1,61 @@
-.wrapper{
-  
+.wrapper {
+  --text-color: #333;
+  height: var(--height-header);
+  background-color: #fff;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  .title {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: var(--height-header);
+    color: var(--text-color);
+  }
+  .user {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .username {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+  }
 }
+
+// .wrapInfo {
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   width: 800px;
+//   background: #fff;
+//   padding: 20px;
+//   border-radius: 3px;
+// }
+// .modalPassword {
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   width: 400px;
+//   background: #fff;
+//   padding: 20px;
+//   border-radius: 3px;
+// }
+// .wrapPassword {
+//   background: #fff;
+//   padding: 20px;
+//   border-radius: 3px;
+//   border: 1px solid #c4c4c4;
+// }
+// .changePassText {
+//   font-family: Roboto;
+//   font-weight: 500;
+//   font-size: 20px;
+//   margin-bottom: 20px;
+// }
