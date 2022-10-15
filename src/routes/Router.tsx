@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { privateRoutes, publicRoutes, routes } from '.'
-import { appValue } from '../features/app/appSlice'
+import { ownerStore } from '../features/owner/ownerSlice'
+import { EStatus } from '../constants/EStatus'
 function ProtectedRoute() {
-  const isLogin = useAppSelector(appValue).isLogin
+  const isLogin = useAppSelector(ownerStore).status === EStatus.Success
   return isLogin ? <Outlet /> : <Navigate to={routes.login} />
 }
 function Router() {

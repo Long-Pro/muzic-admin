@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 
-import { appValue, updateHeaderTitle } from '../../features/app/appSlice'
+import { updateHeaderTitle } from '../../features/app/appSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import images from '../../assets/images'
 import styles from './User.module.scss'

@@ -1,22 +1,23 @@
 import { useState, ChangeEvent, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { Button, TextField } from '@mui/material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { ownerValue } from '../../features/owner/ownerSlice'
-import { updateLoginState } from '../../features/app/appSlice'
+import { ownerStore } from '../../features/owner/ownerSlice'
 import { login } from '../../features/owner/ownerSlice'
 import { ILogin } from '../../Interfaces/base/ILogin'
 import { routes } from '../../routes'
-
-import { Button, TextField } from '@mui/material'
-import styles from './index.module.scss'
+import { CommonHelper } from '../../utils/commonHelper'
+import { EStatus } from '../../constants/EStatus'
+import styles from './Login.module.scss'
 
 function Login() {
-  console.log(process.env)
+  //console.log(process.env)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const owner = useAppSelector(ownerValue)
+  const owner = useAppSelector(ownerStore)
+
   const [loginValue, setLoginValue] = useState<ILogin>({ username: '', password: '' })
   const handleChangeUsername = (event: ChangeEvent<HTMLInputElement>) => {
     setLoginValue({ ...loginValue, username: event.target.value })
@@ -25,12 +26,12 @@ function Login() {
     setLoginValue({ ...loginValue, password: event.target.value })
   }
   const handleLogin = async () => {
-    console.log(loginValue)
-    console.log(owner)
     dispatch(login(loginValue))
-    dispatch(updateLoginState(true))
-    navigate(routes.user)
   }
+  useEffect(() => {
+    if (owner.status === EStatus.Success) navigate(routes.user)
+    else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
+  }, [owner])
   return (
     <div className={styles.wrapper}>
       <div className={styles.top}></div>

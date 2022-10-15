@@ -1,5 +1,5 @@
 // pages
-import { Login, Artist, Song, Album, User } from '../pages'
+import { Login, SocialLogin, Artist, Song, Album, User } from '../pages'
 
 // layout
 import { MainLayout, EmptyLayout } from '../layouts'

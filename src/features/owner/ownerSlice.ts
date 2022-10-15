@@ -1,21 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState, AppThunk } from '../../app/store'
-import * as service from './service'
+import * as service from './ownerService'
 import { IOwner } from '../../Interfaces/base/IOwner'
 import { ILogin } from '../../Interfaces/base/ILogin'
-
+import { UserCredential } from 'firebase/auth'
+import { CommonHelper } from '../../utils/commonHelper'
+import { EStatus } from '../../constants/EStatus'
 export interface ownerState {
-  value: IOwner | null
-  status: 'success' | 'loading' | 'failed'
+  value: UserCredential | null
+  status: EStatus
 }
 
 const initialState: ownerState = {
   value: null,
-  status: 'success',
+  status: EStatus.Idle,
 }
 export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
-  const response = await service.login(login)
-  return response
+  //const response = await service.login(login)
+  return await service.login(login)
 })
 
 export const ownerSlice = createSlice({
@@ -25,20 +27,20 @@ export const ownerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
-        state.status = 'loading'
+        state.status = EStatus.Loading
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.status = 'success'
+        state.status = EStatus.Success
         state.value = action.payload
       })
       .addCase(login.rejected, (state) => {
-        state.status = 'failed'
+        state.status = EStatus.Failed
       })
   },
 })
 
 export const {} = ownerSlice.actions
 
-export const ownerValue = (state: RootState) => state.owner.value
+export const ownerStore = (state: RootState) => state.owner
 
 export default ownerSlice.reducer

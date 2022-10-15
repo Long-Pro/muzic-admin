@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import { useAppSelector, useAppDispatch } from '../../../app/hooks'
-import { appValue } from '../../../features/app/appSlice'
-import { ownerValue } from '../../../features/owner/ownerSlice'
+import { appStore } from '../../../features/app/appSlice'
+import { ownerStore } from '../../../features/owner/ownerSlice'
 import { ArrowDropDown } from '@mui/icons-material'
 
 import images from '../../../assets/images'
@@ -11,8 +11,8 @@ import { Avatar, Menu, MenuItem } from '@mui/material'
 import { IOwner } from '../../../Interfaces/base/IOwner'
 const cx = classNames.bind(styles)
 function Header() {
-  const app = useAppSelector(appValue)
-  const owner = useAppSelector(ownerValue)
+  const app = useAppSelector(appStore)
+  const owner = useAppSelector(ownerStore)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openMenu = Boolean(anchorEl)
@@ -28,7 +28,7 @@ function Header() {
       <div className={cx('wrapper')}>
         <div className={cx('title')}>{app.headerTitle}</div>
         <div className={cx('user')} id="user" onClick={handleClickUser}>
-          <div className={cx('username')}>{owner?.username}</div>
+          <div className={cx('username')}>{owner?.value?.user.email}</div>
           <ArrowDropDown />
           <Avatar alt="Cindy Baker" src="https://loremflickr.com/100/100" />
         </div>
