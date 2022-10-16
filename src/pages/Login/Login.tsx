@@ -7,7 +7,7 @@ import { ownerStore } from '../../features/owner/ownerSlice'
 import { login } from '../../features/owner/ownerSlice'
 import { ILogin } from '../../Interfaces/base/ILogin'
 import { routes } from '../../routes'
-import { CommonHelper } from '../../utils/commonHelper'
+import { CommonHelper } from '../../utils/CommonHelper'
 import { EStatus } from '../../constants/EStatus'
 import styles from './Login.module.scss'
 
@@ -28,10 +28,22 @@ function Login() {
   const handleLogin = async () => {
     dispatch(login(loginValue))
   }
+  // useEffect(() => {
+  //   if (owner.status === EStatus.Success) navigate(routes.user)
+  //   else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
+  // }, [owner])
   useEffect(() => {
-    if (owner.status === EStatus.Success) navigate(routes.user)
-    else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
-  }, [owner])
+    fetch('http://178.128.85.205/api/song/country/vietnam', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err))
+  }, [])
   return (
     <div className={styles.wrapper}>
       <div className={styles.top}></div>

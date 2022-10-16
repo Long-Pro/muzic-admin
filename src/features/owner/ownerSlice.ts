@@ -4,7 +4,7 @@ import * as service from './ownerService'
 import { IOwner } from '../../Interfaces/base/IOwner'
 import { ILogin } from '../../Interfaces/base/ILogin'
 import { UserCredential } from 'firebase/auth'
-import { CommonHelper } from '../../utils/commonHelper'
+import { CommonHelper } from '../../utils/CommonHelper'
 import { EStatus } from '../../constants/EStatus'
 export interface ownerState {
   value: UserCredential | null

@@ -9,8 +9,6 @@ const cx = classNames.bind(styles)
 function User() {
   const dispatch = useAppDispatch()
   useEffect(() => {
-    console.log('uuuuuuuuuuu')
-
     dispatch(updateHeaderTitle('NGƯỜI DÙNG'))
   }, [])
   return (
