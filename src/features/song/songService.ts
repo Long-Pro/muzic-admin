@@ -8,5 +8,4 @@ import { auth } from '../../configs/firebase'
 export async function getAllSong(): Promise<{ data: ISong[] }> {
   const link = '/api/song'
   return await _axios.get(link)
-  //return new Promise<IOwner>((resolve) => setTimeout(() => resolve({ account: 'long-pro', name: 'Long' }), 1000))
 }

@@ -16,8 +16,9 @@ const initialState: ownerState = {
   status: EStatus.Idle,
 }
 export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
-  //const response = await service.login(login)
-  return await service.login(login)
+  const response = await service.login(login)
+  //console.log(response)
+  return response
 })
 
 export const ownerSlice = createSlice({

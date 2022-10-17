@@ -1,2 +1,23 @@
 .wrapper {
+  padding: 20px;
+  .filter-wrapper {
+    display: flex;
+    justify-content: start;
+    background: #fff;
+    height: 100px;
+    align-items: center;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .content {
+    display: flex;
+    // justify-content: space-between;
+    background: #fff;
+    margin-top: 20px;
+    border-radius: 3px;
+    padding: 20px;
+    min-height: 606px;
+    box-sizing: border-box;
+  }
 }

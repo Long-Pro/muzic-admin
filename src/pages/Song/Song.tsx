@@ -1,60 +1,121 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
+import { DataGrid } from '@mui/x-data-grid'
+
 import { updateHeaderTitle } from '../../features/app/appSlice'
-import { getAllSong } from '../../features/song/songSlice'
+import { getAllSong, songStore } from '../../features/song/songSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 
 import images from '../../assets/images'
 import styles from './Song.module.scss'
-import axios from 'axios'
-// let token =
-//   'eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkMzQwZGRiYzNjNWJhY2M0Y2VlMWZiOWQxNmU5ODM3ZWM2MTYzZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbWFuZ2F0b29uLWE3NjAzIiwiYXVkIjoibWFuZ2F0b29uLWE3NjAzIiwiYXV0aF90aW1lIjoxNjY1OTE1NzI3LCJ1c2VyX2lkIjoiWmNoRFdMZzZBMU9jeTZWSXM3RXlCMGd4d3ozMiIsInN1YiI6IlpjaERXTGc2QTFPY3k2VklzN0V5QjBneHd6MzIiLCJpYXQiOjE2NjU5MTU3MjcsImV4cCI6MTY2NTkxOTMyNywiZW1haWwiOiJudmwxNjgyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJudmwxNjgyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.PYLaWjzth6JtVvjcSZ51cmbA8UExEXV5Y_fFD47_w7fjuh_G5qzseIrftOPHkcHt7_oTHb59SaycX2SKdqlwbDzXi4KX-jseVn39yMX_dwcwNzxuqin9J3-qmXt8Kmr91L7F_qr0FQJNYkV4gxfFqZ_950J8LJtsi6edUo-eBUUnptVvPWx7mF1YHSxYfF_PeMxgctZde2_3UFxj4qKA_ISQ2rfB5O5AfE1g_SJsCOXp1qPwyP7f1Wjbn6FrlTJTVSebpeliML6rJMQLOo_jnJn_6gHhrOUD5C3TVvA29Ow1IRZmLK6X5PUv68VYIBud4PYm6dp47MgxQ6h_Cyjh3g'
-// axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*'
+import { ISong } from '../../Interfaces/base/ISong'
+import {
+  Autocomplete,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from '@mui/material'
+
 const cx = classNames.bind(styles)
 function Song() {
   const dispatch = useAppDispatch()
-  // useEffect(() => {
-  //   // dispatch(updateHeaderTitle('BÀI HÁT'))
-  //   // dispatch(getAllSong())
-  //   test()
-  // }, [])
-  // const test = async () => {
-  //   // axios
-  //   //   .get('http://178.128.85.205/api/song/country/vietnam', {
-  //   //     headers: {
-  //   //       'Content-Type': 'application/json;charset=utf-8',
-  //   //       'Access-Control-Allow-Origin': '*',
-  //   //       Accept: 'application/json',
-  //   //     },
-  //   //   })
-  //   //   .then((x: any) => console.log('x', x))
-  //   //   .catch((y: any) => console.log('y', y))
-  //   fetch('http://178.128.85.205/api/song/country/vietnam', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Accept: 'application/json',
-  //     },
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => console.log(data))
-  //     .catch((err) => console.log(err))
-  // }
+
+  const { status: songStoreStatus, value: songStoreValue } = useAppSelector(songStore)
+
+  const [filterBy, setFilterBy] = useState<string>('name')
+
   useEffect(() => {
-    fetch('http://178.128.85.205/api/song/country/vietnam', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err))
+    dispatch(updateHeaderTitle('BÀI HÁT'))
+    dispatch(getAllSong())
   }, [])
+
+  const [filterValue, setFilterValue] = useState<string>('')
+  const [names, setNames] = useState<string[]>([])
+  const [codes, setCodes] = useState<string[]>([])
+  const [songIds, setSongIds] = useState<number[]>([])
+  const [artistNames, setArtistNames] = useState<string[]>([])
+  useEffect(() => {
+    setNames(songStoreValue.map((x) => x.name))
+    setCodes(songStoreValue.map((x) => x.code))
+    setSongIds(songStoreValue.map((x) => x.songId))
+    setArtistNames(songStoreValue.map((x) => x.artistName))
+  }, [songStoreStatus])
+  const getDataSourceFilter = (filterBy: string): any[] => {
+    let data: any[]
+    switch (filterBy) {
+      case 'name':
+        data = names
+        break
+      case 'code':
+        data = codes
+        break
+      case 'songId':
+        data = songIds
+        break
+      case 'artistName':
+        data = artistNames
+        break
+      default:
+        data = names
+        break
+    }
+    return data
+  }
+  const handleChangeFilterValue = (event: any, newValue: string) => {
+    setFilterValue(newValue)
+  }
+  const handleChangeFilterBy = (event: SelectChangeEvent<string>) => {
+    setFilterBy(event.target.value)
+  }
+
+  const columns = [
+    { field: 'songId', headerName: 'Mã bài hát', flex: 1 },
+    { field: 'name', headerName: 'Tên bài hát', flex: 1 },
+    { field: 'code', headerName: 'Code', flex: 1 },
+    { field: 'total_listen', headerName: 'Lượt nghe', flex: 1 },
+    { field: 'country', headerName: 'Quốc gia', flex: 1 },
+    { field: 'artistName', headerName: 'Ca sĩ', flex: 1 },
+  ]
+
   return (
     <div className={cx('wrapper')}>
-      <h1>Song</h1>
+      <div className={cx('filter-wrapper')}>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={getDataSourceFilter(filterBy)}
+          sx={{ width: '300px', marginRight: '20px' }}
+          value={filterValue}
+          renderInput={(params) => <TextField {...params} label="Giá trị" />} //{label={filter=='phone'?'SDT':'ID'}}
+          onChange={handleChangeFilterValue}
+        />
+        <Box sx={{ width: '200px' }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Tìm kiếm</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select2"
+              label="Tìm kiếm"
+              value={filterBy}
+              onChange={handleChangeFilterBy}
+            >
+              <MenuItem value={'name'}>Tên bài hát</MenuItem>
+              <MenuItem value={'artistName'}>Tên ca sĩ</MenuItem>
+              <MenuItem value={'id'}>Id</MenuItem>
+              <MenuItem value={'code'}>Code</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </div>
+      <div className={cx('content')}>
+        <Box sx={{ height: 400, width: '100%' }}>
+          <DataGrid rows={songStoreValue} columns={columns} getRowId={(row: ISong) => row.songId} />
+        </Box>
+      </div>
     </div>
   )
 }

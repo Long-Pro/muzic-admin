@@ -5,17 +5,18 @@ import { ISong } from '../../Interfaces/base/ISong'
 
 import { EStatus } from '../../constants/EStatus'
 export interface ownerState {
-  value: ISong[] | null
+  value: ISong[]
   status: EStatus
 }
 
 const initialState: ownerState = {
-  value: null,
+  value: [],
   status: EStatus.Idle,
 }
 export const getAllSong = createAsyncThunk('song/getAllSong', async () => {
   let res = await service.getAllSong()
-  return res.data
+  console.log(res)
+  return (res.data as any).data
 })
 
 export const songSlice = createSlice({

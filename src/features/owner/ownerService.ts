@@ -9,5 +9,5 @@ export async function login(login: ILogin): Promise<UserCredential> {
   //return _axios.post(link, { username: login.username, password: login.password })
   //return new Promise<IOwner>((resolve) => setTimeout(() => resolve({ account: 'long-pro', name: 'Long' }), 1000))
 
-  return await signInWithEmailAndPassword(auth, login.username, login.password)
+  return signInWithEmailAndPassword(auth, login.username, login.password)
 }

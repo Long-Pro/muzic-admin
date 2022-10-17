@@ -10,6 +10,7 @@ import { routes } from '../../routes'
 import { CommonHelper } from '../../utils/CommonHelper'
 import { EStatus } from '../../constants/EStatus'
 import styles from './Login.module.scss'
+import _axios from '../../utils/_axios'
 
 function Login() {
   //console.log(process.env)
@@ -28,22 +29,16 @@ function Login() {
   const handleLogin = async () => {
     dispatch(login(loginValue))
   }
-  // useEffect(() => {
-  //   if (owner.status === EStatus.Success) navigate(routes.user)
-  //   else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
-  // }, [owner])
   useEffect(() => {
-    fetch('http://178.128.85.205/api/song/country/vietnam', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err))
-  }, [])
+    if (owner.status === EStatus.Success) {
+      navigate(routes.user)
+      const token = (owner.value as any)._tokenResponse.idToken
+      console.log(token)
+
+      _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
+  }, [owner])
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.top}></div>
