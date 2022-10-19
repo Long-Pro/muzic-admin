@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { getAllSong, songStore } from '../../features/song/songSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 
+import { CommonHelper } from '../../utils/CommonHelper'
 import images from '../../assets/images'
 import styles from './Song.module.scss'
 import { ISong } from '../../Interfaces/base/ISong'
@@ -19,6 +20,8 @@ import {
   SelectChangeEvent,
   TextField,
 } from '@mui/material'
+import { Visibility, Edit, Delete } from '@mui/icons-material'
+import CreateUpdateForm from './CreateUpdateForm/CreateUpdateForm'
 
 const cx = classNames.bind(styles)
 function Song() {
@@ -32,18 +35,39 @@ function Song() {
     dispatch(updateHeaderTitle('BÀI HÁT'))
     dispatch(getAllSong())
   }, [])
+  useEffect(() => {
+    setSongs(songStoreValue)
+  }, [songStoreValue])
 
-  const [filterValue, setFilterValue] = useState<string>('')
+  const [songs, setSongs] = useState<ISong[]>([])
+  const [filterValue, setFilterValue] = useState<string | null>(null)
+  const [pageSize, setPageSize] = useState<number>(25)
   const [names, setNames] = useState<string[]>([])
   const [codes, setCodes] = useState<string[]>([])
-  const [songIds, setSongIds] = useState<number[]>([])
+  const [songIds, setSongIds] = useState<string[]>([])
   const [artistNames, setArtistNames] = useState<string[]>([])
   useEffect(() => {
-    setNames(songStoreValue.map((x) => x.name))
-    setCodes(songStoreValue.map((x) => x.code))
-    setSongIds(songStoreValue.map((x) => x.songId))
-    setArtistNames(songStoreValue.map((x) => x.artistName))
+    setNames(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.name)))
+    setCodes(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.code)))
+    setSongIds(CommonHelper.filterUniqueValue<number>(songStoreValue.map((x) => x.songId)).map((x) => x.toString()))
+    setArtistNames(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.artistName)))
   }, [songStoreStatus])
+  useEffect(() => {
+    getDataSourceFilter(filterBy)
+  }, [filterBy])
+  const handleChangeFilterValue = (event: any, newValue: string | null) => {
+    setFilterValue(newValue) //setFilterValue(newValue ?? '')
+    console.log(newValue)
+    if (newValue) {
+      const data = songStoreValue.filter((x: any) => x[filterBy] == newValue)
+      setSongs(data)
+    } else {
+      setSongs(songStoreValue)
+    }
+  }
+  const handleChangeFilterBy = (event: SelectChangeEvent<string>) => {
+    setFilterBy(event.target.value)
+  }
   const getDataSourceFilter = (filterBy: string): any[] => {
     let data: any[]
     switch (filterBy) {
@@ -65,20 +89,36 @@ function Song() {
     }
     return data
   }
-  const handleChangeFilterValue = (event: any, newValue: string) => {
-    setFilterValue(newValue)
-  }
-  const handleChangeFilterBy = (event: SelectChangeEvent<string>) => {
-    setFilterBy(event.target.value)
+
+  const [showDetail, setShowDetail] = useState<boolean>(false)
+  const clickShowDetail = (song: ISong) => {
+    console.log(song)
+    setShowDetail(true)
   }
 
-  const columns = [
+  const columns: GridColDef[] = [
     { field: 'songId', headerName: 'Mã bài hát', flex: 1 },
     { field: 'name', headerName: 'Tên bài hát', flex: 1 },
     { field: 'code', headerName: 'Code', flex: 1 },
     { field: 'total_listen', headerName: 'Lượt nghe', flex: 1 },
     { field: 'country', headerName: 'Quốc gia', flex: 1 },
     { field: 'artistName', headerName: 'Ca sĩ', flex: 1 },
+    {
+      field: '_id',
+      headerName: 'Thao tác',
+      width: 150,
+      headerAlign: 'center',
+      disableExport: true,
+      renderCell: (params: GridRenderCellParams<ISong>) => {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'space-evenly', flex: 1 }}>
+            <Visibility color="primary" onClick={() => clickShowDetail(params.row)} />
+            <Edit color="primary" onClick={() => clickShowDetail(params.row)} />
+            <Delete color="primary" onClick={() => clickShowDetail(params.row)} />
+          </div>
+        )
+      },
+    },
   ]
 
   return (
@@ -105,17 +145,27 @@ function Song() {
             >
               <MenuItem value={'name'}>Tên bài hát</MenuItem>
               <MenuItem value={'artistName'}>Tên ca sĩ</MenuItem>
-              <MenuItem value={'id'}>Id</MenuItem>
+              <MenuItem value={'songId'}>Id</MenuItem>
               <MenuItem value={'code'}>Code</MenuItem>
             </Select>
           </FormControl>
         </Box>
       </div>
       <div className={cx('content')}>
-        <Box sx={{ height: 400, width: '100%' }}>
-          <DataGrid rows={songStoreValue} columns={columns} getRowId={(row: ISong) => row.songId} />
+        <Box sx={{ width: '100%' }}>
+          <DataGrid
+            rows={songs}
+            columns={columns}
+            getRowId={(row: ISong) => row.songId}
+            autoHeight
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[25, 50, 100]}
+            pagination
+          />
         </Box>
       </div>
+      <CreateUpdateForm />
     </div>
   )
 }

@@ -23,4 +23,12 @@ export class CommonHelper {
       progress: undefined,
     })
   }
+  static filterUniqueValue<T>(arr: T[]) {
+    const res: T[] = []
+    arr.forEach((x) => {
+      if (!res.includes(x)) res.push(x)
+    })
+    //res.sort()
+    return res
+  }
 }

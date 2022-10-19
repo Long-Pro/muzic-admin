@@ -1,6 +1,5 @@
 export interface IOwner {
-  username: string
-  token?: string
-  id: number
-  role: string
+  accessToken?: string
+  email?: string
+  displayName?: string
 }

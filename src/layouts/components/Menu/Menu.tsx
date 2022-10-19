@@ -21,13 +21,13 @@ function Menu() {
         <MusicNote sx={{ color: '#fff' }} />
         <div>Bài hát</div>
       </NavLink>
-      <NavLink className={({ isActive }) => cx('item', isActive && 'active')} to={routes.album}>
+      <NavLink className={({ isActive }) => cx('item', isActive && 'active')} to={routes.playlist}>
         <LibraryMusic sx={{ color: '#fff' }} />
-        <div>Album</div>
+        <div>Playlist</div>
       </NavLink>
       <NavLink className={({ isActive }) => cx('item', isActive && 'active')} to={routes.artist}>
         <Person sx={{ color: '#fff' }} />
-        <div>Tác giả</div>
+        <div>Ca sĩ</div>
       </NavLink>
     </div>
   )

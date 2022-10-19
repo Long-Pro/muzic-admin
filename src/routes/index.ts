@@ -1,5 +1,5 @@
 // pages
-import { Login, SocialLogin, Artist, Song, Album, User } from '../pages'
+import { Login, SocialLogin, Artist, Song, Playlist, User } from '../pages'
 
 // layout
 import { MainLayout, EmptyLayout } from '../layouts'
@@ -10,13 +10,13 @@ const routes = {
   login: '/login',
   user: '/user',
   song: '/song',
-  album: '/album',
+  playlist: '/playlist',
   artist: '/artist',
 }
 const publicRoutes = [{ path: routes.login, page: Login, layout: EmptyLayout }]
 const privateRoutes = [
   { path: routes.user, page: User, layout: MainLayout },
-  { path: routes.album, page: Album, layout: MainLayout },
+  { path: routes.playlist, page: Playlist, layout: MainLayout },
   { path: routes.song, page: Song, layout: MainLayout },
   { path: routes.artist, page: Artist, layout: MainLayout },
 ]

@@ -28,7 +28,7 @@ function Header() {
       <div className={cx('wrapper')}>
         <div className={cx('title')}>{app.headerTitle}</div>
         <div className={cx('user')} id="user" onClick={handleClickUser}>
-          <div className={cx('username')}>{owner?.value?.user.email}</div>
+          <div className={cx('username')}>{owner?.value?.email}</div>
           <ArrowDropDown />
           <Avatar alt="Cindy Baker" src="https://loremflickr.com/100/100" />
         </div>

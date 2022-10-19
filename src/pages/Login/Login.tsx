@@ -32,9 +32,8 @@ function Login() {
   useEffect(() => {
     if (owner.status === EStatus.Success) {
       navigate(routes.user)
-      const token = (owner.value as any)._tokenResponse.idToken
+      const token = owner.value?.accessToken
       console.log(token)
-
       _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
   }, [owner])

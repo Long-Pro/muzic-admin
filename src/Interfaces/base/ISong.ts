@@ -13,4 +13,5 @@ export interface ISong {
   country: string
   artistName: string
   isLiked: boolean
+  _id?: any
 }

@@ -7,7 +7,7 @@ import { UserCredential } from 'firebase/auth'
 import { CommonHelper } from '../../utils/CommonHelper'
 import { EStatus } from '../../constants/EStatus'
 export interface ownerState {
-  value: UserCredential | null
+  value: IOwner | null
   status: EStatus
 }
 
@@ -17,8 +17,13 @@ const initialState: ownerState = {
 }
 export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
   const response = await service.login(login)
-  //console.log(response)
-  return response
+  console.log(response)
+  const data: IOwner = {
+    accessToken: (response.user as any).accessToken,
+    email: (response.user as any).email,
+    displayName: (response.user as any).displayName,
+  }
+  return data
 })
 
 export const ownerSlice = createSlice({

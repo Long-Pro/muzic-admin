@@ -1,6 +1,6 @@
 export { default as Login } from './Login/Login'
 export { default as User } from './User/User'
 export { default as Song } from './Song/Song'
-export { default as Album } from './Album/Album'
 export { default as Artist } from './Artist/Artist'
+export { default as Playlist } from './Playlist/Playlist'
 export { default as SocialLogin } from './SocialLogin/SocialLogin'

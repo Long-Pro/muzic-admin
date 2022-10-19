@@ -2051,10 +2051,10 @@
   "resolved" "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.10.9.tgz"
   "version" "5.10.9"
 
-"@mui/icons-material@^5.10.6":
-  "integrity" "sha512-QwxdRmLA46S94B0hExPDx0td+A2unF+33bQ6Cs+lNpJKVsm1YeHwNdYXYcnpWeHeQQ07055OXl7IB2GKDd0MfA=="
-  "resolved" "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.10.6.tgz"
-  "version" "5.10.6"
+"@mui/icons-material@^5.10.9":
+  "integrity" "sha512-sqClXdEM39WKQJOQ0ZCPTptaZgqwibhj2EFV9N0v7BU1PO8y4OcX/a2wIQHn4fNuDjIZktJIBrmU23h7aqlGgg=="
+  "resolved" "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.10.9.tgz"
+  "version" "5.10.9"
   dependencies:
     "@babel/runtime" "^7.19.0"
 
