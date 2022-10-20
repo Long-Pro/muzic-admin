@@ -13,3 +13,42 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.modal-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 3px;
+  padding: 4px 20px 20px;
+  .title-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .title {
+      color: #333;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      bottom: 0px;
+      left: 0;
+      height: 1px;
+      background: #ccc;
+    }
+  }
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .bottom-button-group {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

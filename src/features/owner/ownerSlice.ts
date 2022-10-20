@@ -5,15 +5,15 @@ import { IOwner } from '../../Interfaces/base/IOwner'
 import { ILogin } from '../../Interfaces/base/ILogin'
 import { UserCredential } from 'firebase/auth'
 import { CommonHelper } from '../../utils/CommonHelper'
-import { EStatus } from '../../constants/EStatus'
+import { EStatusState } from '../../constants/common'
 export interface ownerState {
   value: IOwner | null
-  status: EStatus
+  status: EStatusState
 }
 
 const initialState: ownerState = {
   value: null,
-  status: EStatus.Idle,
+  status: EStatusState.Idle,
 }
 export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
   const response = await service.login(login)
@@ -33,14 +33,14 @@ export const ownerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
-        state.status = EStatus.Loading
+        state.status = EStatusState.Loading
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.status = EStatus.Success
+        state.status = EStatusState.Success
         state.value = action.payload
       })
       .addCase(login.rejected, (state) => {
-        state.status = EStatus.Failed
+        state.status = EStatusState.Failed
       })
   },
 })

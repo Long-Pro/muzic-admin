@@ -8,7 +8,7 @@ import { login } from '../../features/owner/ownerSlice'
 import { ILogin } from '../../Interfaces/base/ILogin'
 import { routes } from '../../routes'
 import { CommonHelper } from '../../utils/CommonHelper'
-import { EStatus } from '../../constants/EStatus'
+import { EStatusState } from '../../constants/common'
 import styles from './Login.module.scss'
 import _axios from '../../utils/_axios'
 
@@ -30,12 +30,12 @@ function Login() {
     dispatch(login(loginValue))
   }
   useEffect(() => {
-    if (owner.status === EStatus.Success) {
+    if (owner.status === EStatusState.Success) {
       navigate(routes.user)
       const token = owner.value?.accessToken
       console.log(token)
       _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    } else if (owner.status === EStatus.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
+    } else if (owner.status === EStatusState.Failed) CommonHelper.showErrorMess('Tài khoản hoặc mật khẩu không đúng')
   }, [owner])
 
   return (
