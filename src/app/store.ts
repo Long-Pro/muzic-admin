@@ -3,6 +3,8 @@ import counterReducer from '../features/counter/counterSlice'
 import ownerReducer from '../features/owner/ownerSlice'
 import appReducer from '../features/app/appSlice'
 import songReducer from '../features/song/songSlice'
+import artistReducer from '../features/artist/artistSlice'
+import userReducer from '../features/user/userSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     owner: ownerReducer,
     app: appReducer,
     song: songReducer,
+    artist: artistReducer,
+    user: userReducer,
   },
 })
 

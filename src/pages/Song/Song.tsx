@@ -9,7 +9,7 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { CommonHelper } from '../../utils/CommonHelper'
 import images from '../../assets/images'
 import styles from './Song.module.scss'
-import { ISong } from '../../Interfaces/base/ISong'
+import { ISong } from '../../Interfaces/store/ISong'
 import { ETypeState, EStatusState } from '../../constants/common'
 import {
   Autocomplete,
@@ -25,7 +25,7 @@ import {
   IconButton,
 } from '@mui/material'
 import { Visibility, Edit, Delete } from '@mui/icons-material'
-import CreateSongUpdateForm from './CreateSongUpdateForm/CreateSongUpdateForm'
+import CreateUpdateSongForm from './CreateUpdateSongForm/CreateUpdateSongForm'
 import SongDetail from './SongDetail/SongDetail'
 
 const cx = classNames.bind(styles)
@@ -126,6 +126,9 @@ function Song() {
     setSong(songClick)
     setShowDetailModal(true)
   }
+  const clickCreateButton = () => {
+    setShowCreateModal(true)
+  }
   const clickEditButton = (songclick: ISong) => {}
   const clickDeleteButton = (songClick: ISong) => {
     setSong(songClick)
@@ -204,6 +207,9 @@ function Song() {
             </Select>
           </FormControl>
         </Box>
+        <Button variant="contained" color="success" sx={{ marginLeft: 'auto' }} onClick={clickCreateButton}>
+          Thêm
+        </Button>
       </div>
       <div className={cx('content')}>
         <Box sx={{ width: '100%' }}>
@@ -219,8 +225,8 @@ function Song() {
           />
         </Box>
       </div>
-      {showCreateModal && <CreateSongUpdateForm isCreate />}
-      {showEditModal && <CreateSongUpdateForm song={song} />}
+      {showCreateModal && <CreateUpdateSongForm open={showCreateModal} setOpen={setShowCreateModal} />}
+      {showEditModal && <CreateUpdateSongForm song={song} open={showEditModal} setOpen={setShowEditModal} />}
       {showDetailModal && <SongDetail song={song as ISong} open={showDetailModal} setOpen={setShowDetailModal} />}
       <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <div className="modal-wrapper">

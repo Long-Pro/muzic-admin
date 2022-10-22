@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState, AppThunk } from '../../app/store'
-import * as service from './songService'
-import { ISong } from '../../Interfaces/store/ISong'
+import * as service from './artistService'
+import { IArtist } from '../../Interfaces/store/IArtist'
 
 import { EStatusState, ETypeState } from '../../constants/common'
 export interface ownerState {
-  value: ISong[]
+  value: IArtist[]
   status: EStatusState
   type: ETypeState
 }
@@ -15,58 +15,58 @@ const initialState: ownerState = {
   status: EStatusState.Idle,
   type: ETypeState.Get,
 }
-export const getAllSong = createAsyncThunk('song/getAllSong', async () => {
-  let res = await service.getAllSong()
+export const getAllArtist = createAsyncThunk('artist/getAllArtist', async () => {
+  let res = await service.getAllArtist()
   console.log(res)
-  return (res.data as any).data
+  return res.data
 })
-export const deleteSong = createAsyncThunk('song/deleteSong', async (id: number) => {
-  let res = await service.deleteSong(id)
+export const deleteArtist = createAsyncThunk('artist/deleteArtist', async (id: number) => {
+  let res = await service.deleteArtist(id)
   console.log(res)
   return res.data
 })
 
-export const songSlice = createSlice({
-  name: 'song',
+export const artistSlice = createSlice({
+  name: 'artist',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAllSong.pending, (state) => {
+      .addCase(getAllArtist.pending, (state) => {
         state.status = EStatusState.Loading
         state.type = ETypeState.Get
       })
-      .addCase(getAllSong.fulfilled, (state, action) => {
+      .addCase(getAllArtist.fulfilled, (state, action) => {
         state.status = EStatusState.Success
         state.value = action.payload
         state.type = ETypeState.Get
       })
-      .addCase(getAllSong.rejected, (state) => {
+      .addCase(getAllArtist.rejected, (state) => {
         state.status = EStatusState.Failed
         state.type = ETypeState.Get
       })
     builder
-      .addCase(deleteSong.pending, (state) => {
+      .addCase(deleteArtist.pending, (state) => {
         state.status = EStatusState.Loading
         state.type = ETypeState.Delete
       })
-      .addCase(deleteSong.fulfilled, (state, action) => {
+      .addCase(deleteArtist.fulfilled, (state, action) => {
         state.status = EStatusState.Success
         state.type = ETypeState.Delete
 
-        const index = state.value.findIndex((x) => x.songId === action.payload.songId)
+        const index = state.value.findIndex((x) => x.id === action.payload.id)
         state.value[index] = action.payload
         state.value = [...state.value]
       })
-      .addCase(deleteSong.rejected, (state) => {
+      .addCase(deleteArtist.rejected, (state) => {
         state.status = EStatusState.Failed
         state.type = ETypeState.Delete
       })
   },
 })
 
-export const {} = songSlice.actions
+export const {} = artistSlice.actions
 
-export const songStore = (state: RootState) => state.song
+export const artistStore = (state: RootState) => state.artist
 
-export default songSlice.reducer
+export default artistSlice.reducer

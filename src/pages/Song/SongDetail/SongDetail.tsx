@@ -5,7 +5,7 @@ import { Close } from '@mui/icons-material'
 
 import images from '../../../assets/images'
 import styles from './SongDetail.module.scss'
-import { ISong } from '../../../Interfaces/base/ISong'
+import { ISong } from '../../../Interfaces/store/ISong'
 const cx = classNames.bind(styles)
 interface IProp {
   song: ISong

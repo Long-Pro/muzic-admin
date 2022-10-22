@@ -1,2 +1,12 @@
 .wrapper {
+  padding: 20px;
+  position: relative;
+  .content {
+    display: flex;
+    background: #fff;
+    border-radius: 3px;
+    padding: 20px;
+    min-height: 606px;
+    box-sizing: border-box;
+  }
 }

@@ -16,7 +16,7 @@ import {
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { ownerStore } from '../../features/owner/ownerSlice'
 import { login } from '../../features/owner/ownerSlice'
-import { ILogin } from '../../Interfaces/base/ILogin'
+import { ILogin } from '../../Interfaces/store/ILogin'
 import { routes } from '../../routes'
 
 import { Button, TextField } from '@mui/material'

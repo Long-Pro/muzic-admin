@@ -15,3 +15,14 @@ export interface ISong {
   isLiked: boolean
   _id?: any
 }
+export interface ISongCreate {
+  name?: string
+  country?: string
+  artistId?: number
+  lyric?: any
+  musicFile?: any
+  thumbnail?: any
+}
+export interface ISongUpdate extends ISongCreate {
+  id: number
+}

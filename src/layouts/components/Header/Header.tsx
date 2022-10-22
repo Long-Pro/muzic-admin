@@ -8,7 +8,7 @@ import { ArrowDropDown } from '@mui/icons-material'
 import images from '../../../assets/images'
 import styles from './Header.module.scss'
 import { Avatar, Menu, MenuItem } from '@mui/material'
-import { IOwner } from '../../../Interfaces/base/IOwner'
+import { IOwner } from '../../../Interfaces/store/IOwner'
 const cx = classNames.bind(styles)
 function Header() {
   const app = useAppSelector(appStore)
