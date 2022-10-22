@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { getAllSong, deleteSong, songStore } from '../../features/song/songSlice'
@@ -25,35 +25,48 @@ import {
   IconButton,
 } from '@mui/material'
 import { Visibility, Edit, Delete } from '@mui/icons-material'
-import CreateUpdateSongForm from './CreateUpdateSongForm/CreateUpdateSongForm'
+import CreateUpdateSongModal from './CreateUpdateSongModal/CreateUpdateSongModal'
 import SongDetail from './SongDetail/SongDetail'
-
+import { CustomizeModal } from '../../components'
 const cx = classNames.bind(styles)
 function Song() {
   const dispatch = useAppDispatch()
 
   const { status: songStoreStatus, value: songStoreValue, type: songStoreType } = useAppSelector(songStore)
 
-  const [filterBy, setFilterBy] = useState<string>('name')
-
   useEffect(() => {
     dispatch(updateHeaderTitle('BÀI HÁT'))
     dispatch(getAllSong())
   }, [])
   useEffect(() => {
-    setSongs(songStoreValue)
     if (songStoreType === ETypeState.Get) {
       switch (songStoreStatus) {
         case EStatusState.Failed:
           CommonHelper.showErrorMess(`Lấy dữ liệu thất bại`)
           break
         case EStatusState.Success:
-          setNames(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.name)))
-          setCodes(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.code)))
-          setSongIds(
-            CommonHelper.filterUniqueValue<number>(songStoreValue.map((x) => x.songId)).map((x) => x.toString()),
-          )
-          setArtistNames(CommonHelper.filterUniqueValue<string>(songStoreValue.map((x) => x.artistName)))
+          break
+      }
+    }
+    if (songStoreType === ETypeState.Create) {
+      switch (songStoreStatus) {
+        case EStatusState.Failed:
+          CommonHelper.showErrorMess(`Thêm bài hát thất bại`)
+          break
+        case EStatusState.Success:
+          setOpenCreateUpdateModal(false)
+          CommonHelper.showSuccessMess(`Thêm bài hát thành công`)
+          break
+      }
+    }
+    if (songStoreType === ETypeState.Update) {
+      switch (songStoreStatus) {
+        case EStatusState.Failed:
+          CommonHelper.showErrorMess(`Chỉnh sửa thông tin bài hát thất bại`)
+          break
+        case EStatusState.Success:
+          setOpenCreateUpdateModal(false)
+          CommonHelper.showSuccessMess(`Chỉnh sửa thông tin bài hát thành công`)
           break
       }
     }
@@ -63,82 +76,14 @@ function Song() {
           CommonHelper.showErrorMess(`Xóa bài hát ${song?.name} thất bại`)
           break
         case EStatusState.Success:
-          setShowDeleteModal(true)
+          setOpenDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa bài hát ${song?.name} thành công`)
           break
       }
     }
   }, [songStoreValue, songStoreStatus, songStoreType])
 
-  const [songs, setSongs] = useState<ISong[]>([])
-  const [filterValue, setFilterValue] = useState<string | null>(null)
-  const [pageSize, setPageSize] = useState<number>(25)
-  const [names, setNames] = useState<string[]>([])
-  const [codes, setCodes] = useState<string[]>([])
-  const [songIds, setSongIds] = useState<string[]>([])
-  const [artistNames, setArtistNames] = useState<string[]>([])
-  useEffect(() => {
-    getDataSourceFilter(filterBy)
-  }, [filterBy])
-  const handleChangeFilterValue = (event: any, newValue: string | null) => {
-    setFilterValue(newValue) //setFilterValue(newValue ?? '')
-    console.log(newValue)
-    if (newValue) {
-      const data = songStoreValue.filter((x: any) => x[filterBy] == newValue)
-      setSongs(data)
-    } else {
-      setSongs(songStoreValue)
-    }
-  }
-  const handleChangeFilterBy = (event: SelectChangeEvent<string>) => {
-    setFilterBy(event.target.value)
-  }
-  const getDataSourceFilter = (filterBy: string): any[] => {
-    let data: any[]
-    switch (filterBy) {
-      case 'name':
-        data = names
-        break
-      case 'code':
-        data = codes
-        break
-      case 'songId':
-        data = songIds
-        break
-      case 'artistName':
-        data = artistNames
-        break
-      default:
-        data = names
-        break
-    }
-    return data
-  }
-
-  const [song, setSong] = useState<ISong | undefined>()
-  const [showDetailModal, setShowDetailModal] = useState<boolean>(false)
-  const [showEditModal, setShowEditModal] = useState<boolean>(false)
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
-  const [showCreateModal, setShowCreateModal] = useState<boolean>(false)
-
-  const clickDetailButton = (songClick: ISong) => {
-    console.log(songClick)
-    setSong(songClick)
-    setShowDetailModal(true)
-  }
-  const clickCreateButton = () => {
-    setShowCreateModal(true)
-  }
-  const clickEditButton = (songclick: ISong) => {}
-  const clickDeleteButton = (songClick: ISong) => {
-    setSong(songClick)
-    console.log(songClick)
-  }
-  const handleDeleteSong = () => {
-    setShowDeleteModal(false)
-    dispatch(deleteSong(song?.songId as number))
-  }
-
+  const [pageSize, setPageSize] = useState<number>(10)
   const columns: GridColDef[] = [
     { field: 'songId', headerName: 'Mã bài hát', flex: 1 },
     { field: 'name', headerName: 'Tên bài hát', flex: 1 },
@@ -161,11 +106,11 @@ function Song() {
       renderCell: (params: GridRenderCellParams<ISong>) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'space-evenly', flex: 1 }}>
-            <IconButton color="warning" onClick={() => clickDetailButton(params.row)}>
+            {/* <IconButton color="warning" onClick={() => clickDetailButton(params.row)}>
               <Visibility />
-            </IconButton>
+            </IconButton> */}
 
-            <IconButton color="primary" onClick={() => clickEditButton(params.row)}>
+            <IconButton color="primary" onClick={() => clickUpdateButton(params.row)}>
               <Edit />
             </IconButton>
 
@@ -178,75 +123,74 @@ function Song() {
     },
   ]
 
+  const [song, setSong] = useState<ISong>()
+  // delete
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
+  const clickDeleteButton = (songClicked: ISong) => {
+    setSong(songClicked)
+    setOpenDeleteModal(true)
+  }
+  const handleDeleteSong = () => {
+    dispatch(deleteSong(song?.songId as number))
+  }
+  // create/update
+  const [openCreateUpdateModal, setOpenCreateUpdateModal] = useState(false)
+  const [isUpdateModal, setIsUpdateModal] = useState(false)
+  const clickCreateButton = () => {
+    setOpenCreateUpdateModal(true)
+    setIsUpdateModal(false)
+  }
+  const clickUpdateButton = (songClicked: ISong) => {
+    setSong(songClicked)
+    setOpenCreateUpdateModal(true)
+    setIsUpdateModal(true)
+  }
+
   return (
     <div className={cx('wrapper')}>
-      <div className={cx('filter-wrapper')}>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={getDataSourceFilter(filterBy)}
-          sx={{ width: '300px', marginRight: '20px' }}
-          value={filterValue}
-          renderInput={(params) => <TextField {...params} label="Giá trị" />} //{label={filter=='phone'?'SDT':'ID'}}
-          onChange={handleChangeFilterValue}
-        />
-        <Box sx={{ width: '200px' }}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Tìm kiếm</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select2"
-              label="Tìm kiếm"
-              value={filterBy}
-              onChange={handleChangeFilterBy}
-            >
-              <MenuItem value={'name'}>Tên bài hát</MenuItem>
-              <MenuItem value={'artistName'}>Tên ca sĩ</MenuItem>
-              <MenuItem value={'songId'}>Id</MenuItem>
-              <MenuItem value={'code'}>Code</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Button variant="contained" color="success" sx={{ marginLeft: 'auto' }} onClick={clickCreateButton}>
-          Thêm
-        </Button>
-      </div>
       <div className={cx('content')}>
+        <div className={cx('button-create-wrapper')}>
+          <Button size="small" variant="contained" color="success" onClick={clickCreateButton}>
+            Thêm
+          </Button>
+        </div>
         <Box sx={{ width: '100%' }}>
           <DataGrid
-            rows={songs}
+            rows={songStoreValue}
             columns={columns}
             getRowId={(row: ISong) => row.songId}
             autoHeight
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[25, 50, 100]}
+            rowsPerPageOptions={[10, 20, 50]}
             pagination
+            components={{ Toolbar: GridToolbar }}
+            disableSelectionOnClick
           />
         </Box>
       </div>
-      {showCreateModal && <CreateUpdateSongForm open={showCreateModal} setOpen={setShowCreateModal} />}
-      {showEditModal && <CreateUpdateSongForm song={song} open={showEditModal} setOpen={setShowEditModal} />}
-      {showDetailModal && <SongDetail song={song as ISong} open={showDetailModal} setOpen={setShowDetailModal} />}
-      <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <div className="modal-wrapper">
-          <h3 className="title">Xóa bài hát {song?.name}?</h3>
-          <div className="bottom-button-group">
-            <Button size="small" variant="contained" color="warning" onClick={() => setShowDeleteModal(false)}>
-              Thoát
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="error"
-              onClick={() => handleDeleteSong()}
-              sx={{ marginLeft: '20px' }}
-            >
-              Xóa
-            </Button>
-          </div>
+
+      <CreateUpdateSongModal
+        song={song}
+        open={openCreateUpdateModal}
+        setOpen={setOpenCreateUpdateModal}
+        isUpdate={isUpdateModal}
+      />
+
+      <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
+        <p>
+          Bạn chắc chắn muốn xóa bài hát{' '}
+          <h4 className="danger-color" style={{ display: 'inline' }}>
+            {song?.name}
+          </h4>
+          ?
+        </p>
+        <div className="bottom-button-group">
+          <Button size="small" variant="contained" color="error" onClick={handleDeleteSong}>
+            Xóa
+          </Button>
         </div>
-      </Modal>
+      </CustomizeModal>
     </div>
   )
 }

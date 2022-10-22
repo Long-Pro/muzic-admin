@@ -62,12 +62,13 @@ function Artist() {
           CommonHelper.showErrorMess(`Xóa ca sĩ ${artist?.name} thất bại`)
           break
         case EStatusState.Success:
-          setShowDeleteModal(false)
+          setOpenDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa ca sĩ ${artist?.name} thành công`)
           break
       }
     }
   }, [artistStoreValue, artistStoreStatus, artistStoreType])
+
   const [pageSize, setPageSize] = useState<number>(10)
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'Mã ca sĩ', flex: 1 },
@@ -101,16 +102,15 @@ function Artist() {
 
   const [artist, setArtist] = useState<IArtist>()
   // delete
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const clickDeleteButton = (artistClicked: IArtist) => {
     setArtist(artistClicked)
-    setShowDeleteModal(true)
+    setOpenDeleteModal(true)
   }
   const handleDeleteArtist = () => {
-    setShowDeleteModal(false)
     dispatch(deleteArtist(artist?.id as number))
   }
-  // create
+  // create/update
   const [openCreateUpdateModal, setOpenCreateUpdateModal] = useState(false)
   const [isUpdateModal, setIsUpdateModal] = useState(false)
   const clickCreateButton = () => {
@@ -154,7 +154,7 @@ function Artist() {
         isUpdate={isUpdateModal}
       />
 
-      <CustomizeModal title={`Xác nhận`} open={showDeleteModal} setOpen={setShowDeleteModal}>
+      <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa ca sĩ{' '}
           <h4 className="danger-color" style={{ display: 'inline' }}>

@@ -1,17 +1,13 @@
 import { useState, useEffect, Dispatch, SetStateAction, ChangeEvent } from 'react'
 import classNames from 'classnames/bind'
 import { Button, TextField, Autocomplete } from '@mui/material'
-import { Formik } from 'formik'
 
-import { getAllArtist, artistStore } from '../../../features/artist/artistSlice'
 import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { CustomizeModal } from '../../../components'
 import images from '../../../assets/images'
 import styles from './CreateUpdateArtistModal.module.scss'
 import { createArtist, updateArtist } from '../../../features/artist/artistSlice'
 import { IArtist, IArtistCreate } from '../../../Interfaces/store/IArtist'
-import { CommonHelper } from '../../../utils/CommonHelper'
-import { EStatusState, ETypeState } from '../../../constants/common'
 const cx = classNames.bind(styles)
 interface IProp {
   artist?: IArtist

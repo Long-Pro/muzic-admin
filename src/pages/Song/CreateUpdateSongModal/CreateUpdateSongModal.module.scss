@@ -1,0 +1,12 @@
+.field-wrapper {
+  width: 620px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.button-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 10px;
+}

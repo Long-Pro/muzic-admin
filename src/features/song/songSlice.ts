@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState, AppThunk } from '../../app/store'
 import * as service from './songService'
-import { ISong } from '../../Interfaces/store/ISong'
+import { ISong, ISongCreate, ISongUpdate } from '../../Interfaces/store/ISong'
 
 import { EStatusState, ETypeState } from '../../constants/common'
 export interface ownerState {
@@ -22,7 +22,14 @@ export const getAllSong = createAsyncThunk('song/getAllSong', async () => {
 })
 export const deleteSong = createAsyncThunk('song/deleteSong', async (id: number) => {
   let res = await service.deleteSong(id)
-  console.log(res)
+  return res.data
+})
+export const createSong = createAsyncThunk('song/createSong', async (data: ISongCreate) => {
+  let res = await service.createSong(data)
+  return res.data
+})
+export const updateSong = createAsyncThunk('song/updateSong', async (data: ISongUpdate) => {
+  let res = await service.updateSong(data)
   return res.data
 })
 
@@ -61,6 +68,37 @@ export const songSlice = createSlice({
       .addCase(deleteSong.rejected, (state) => {
         state.status = EStatusState.Failed
         state.type = ETypeState.Delete
+      })
+    builder
+      .addCase(createSong.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypeState.Create
+      })
+      .addCase(createSong.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypeState.Create
+        state.value = [...state.value, action.payload]
+      })
+      .addCase(createSong.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypeState.Create
+      })
+    builder
+      .addCase(updateSong.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypeState.Update
+      })
+      .addCase(updateSong.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypeState.Update
+
+        const index = state.value.findIndex((x) => x.songId === action.payload.songId)
+        state.value[index] = action.payload
+        state.value = [...state.value]
+      })
+      .addCase(updateSong.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypeState.Update
       })
   },
 })

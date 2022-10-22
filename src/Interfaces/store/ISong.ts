@@ -12,13 +12,16 @@ export interface ISong {
   total_listen: number
   country: string
   artistName: string
+  artistId: number
   isLiked: boolean
   _id?: any
 }
 export interface ISongCreate {
-  name?: string
-  country?: string
+  name: string
+  country: string
   artistId?: number
+  code?: string
+
   lyric?: any
   musicFile?: any
   thumbnail?: any
