@@ -91,8 +91,6 @@ function User() {
   const clickDeleteButton = (userClicked: IUser) => {
     setUser(userClicked)
     setShowDeleteModal(true)
-
-    console.log(userClicked)
   }
   const handleDeleteUser = () => {
     setShowDeleteModal(false)

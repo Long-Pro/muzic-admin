@@ -1,2 +1,18 @@
 .wrapper {
+  padding: 20px;
+  position: relative;
+  .content {
+    display: flex;
+    background: #fff;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    .button-create-wrapper {
+      position: absolute;
+      right: 33px;
+      top: 30px;
+      z-index: 999;
+    }
+  }
 }

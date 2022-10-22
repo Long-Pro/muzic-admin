@@ -2,7 +2,6 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import classNames from 'classnames/bind'
 import { Modal, Button, TextField, Autocomplete } from '@mui/material'
 
-import { IAutocomplete } from '../../../Interfaces/Mui'
 import { getAllArtist, artistStore } from '../../../features/artist/artistSlice'
 import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { CustomizeModal } from '../../../components'
