@@ -10,3 +10,11 @@ export enum ETypeState {
   Update,
   Delete,
 }
+export enum ETypePlaylistState {
+  Create = 1,
+  Get,
+  Update,
+  Delete,
+  UpdateName,
+  UpdateIsPublic,
+}

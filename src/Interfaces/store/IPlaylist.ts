@@ -1,3 +1,5 @@
+import { ISong } from './ISong'
+
 export interface IPlaylist {
   createdDate: Date
   updatedDate: Date
@@ -5,14 +7,18 @@ export interface IPlaylist {
   name: string
   isPublic: boolean
   userId: number
-
-  isDeleted: boolean
-  _id?: number
+  userName?: string
+  thumbnail: string
+  songResponses: ISong[]
 }
 export interface IPlaylistCreate {
   name: string
-  code?: string
+  isPublic: boolean
 }
 export interface IPlaylistUpdate extends IPlaylistCreate {
-  PlaylistId: number
+  playlistId: number
+}
+export interface IPlaylistUpdateName {
+  playlistId: number
+  name: string
 }

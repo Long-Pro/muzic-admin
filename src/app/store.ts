@@ -5,6 +5,7 @@ import appReducer from '../features/app/appSlice'
 import songReducer from '../features/song/songSlice'
 import artistReducer from '../features/artist/artistSlice'
 import userReducer from '../features/user/userSlice'
+import playlistReducer from '../features/playlist/playlistSlice'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     song: songReducer,
     artist: artistReducer,
     user: userReducer,
+    playlist: playlistReducer,
   },
 })
 
