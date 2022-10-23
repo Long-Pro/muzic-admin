@@ -3,7 +3,7 @@ import classNames from 'classnames/bind'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 
 import { updateHeaderTitle } from '../../features/app/appSlice'
-import { getAllSong, deleteSong, songStore } from '../../features/song/songSlice'
+import { getAllSong, deleteSong, songStore, resetStatus } from '../../features/song/songSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 
 import { CommonHelper } from '../../utils/CommonHelper'
@@ -44,6 +44,7 @@ function Song() {
           CommonHelper.showErrorMess(`Lấy dữ liệu thất bại`)
           break
         case EStatusState.Success:
+          dispatch(resetStatus())
           break
       }
     }
@@ -55,6 +56,7 @@ function Song() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Thêm bài hát thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -62,10 +64,12 @@ function Song() {
       switch (songStoreStatus) {
         case EStatusState.Failed:
           CommonHelper.showErrorMess(`Chỉnh sửa thông tin bài hát thất bại`)
+          dispatch(resetStatus())
           break
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Chỉnh sửa thông tin bài hát thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -77,6 +81,7 @@ function Song() {
         case EStatusState.Success:
           setOpenDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa bài hát ${song?.name} thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -179,11 +184,12 @@ function Song() {
       <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa bài hát{' '}
-          <h4 className="danger-color" style={{ display: 'inline' }}>
+          <span className="danger-color" style={{ fontSize: '20px' }}>
             {song?.name}
-          </h4>
+          </span>
           ?
         </p>
+
         <div className="bottom-button-group">
           <Button size="small" variant="contained" color="error" onClick={handleDeleteSong}>
             Xóa

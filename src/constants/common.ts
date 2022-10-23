@@ -17,4 +17,7 @@ export enum ETypePlaylistState {
   Delete,
   UpdateName,
   UpdateIsPublic,
+  RemoteSongFromPlaylist,
+  InsertSongToPlaylist,
+  UpdateSongInPlaylist,
 }

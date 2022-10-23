@@ -35,7 +35,11 @@ export const updateSong = createAsyncThunk('song/updateSong', async (data: ISong
 export const songSlice = createSlice({
   name: 'song',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = EStatusState.Idle
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllSong.pending, (state) => {
@@ -44,7 +48,8 @@ export const songSlice = createSlice({
       })
       .addCase(getAllSong.fulfilled, (state, action) => {
         state.status = EStatusState.Success
-        state.value = action.payload
+        //state.value = action.payload
+        state.value = action.payload.map((x: ISong) => ({ ...x, _label: `${x.name} - ${x.songId}` }))
         state.type = ETypeState.Get
       })
       .addCase(getAllSong.rejected, (state) => {
@@ -102,7 +107,7 @@ export const songSlice = createSlice({
   },
 })
 
-export const {} = songSlice.actions
+export const { resetStatus } = songSlice.actions
 
 export const songStore = (state: RootState) => state.song
 

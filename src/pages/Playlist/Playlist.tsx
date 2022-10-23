@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import { Box, Button, IconButton } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
-import { Delete, Edit, AddCircleOutline } from '@mui/icons-material'
+import { Delete, Edit, LibraryMusic } from '@mui/icons-material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { ETypePlaylistState, EStatusState } from '../../constants/common'
-import { getAllPlaylist, deletePlaylist, playlistStore } from '../../features/playlist/playlistSlice'
+import { getAllPlaylist, deletePlaylist, playlistStore, resetStatus } from '../../features/playlist/playlistSlice'
+import { ownerStore } from '../../features/owner/ownerSlice'
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { IPlaylist } from '../../Interfaces/store/IPlaylist'
 import { CommonHelper } from '../../utils/CommonHelper'
 import CreateUpdatePlaylistModal from './CreateUpdatePlaylistModal/CreateUpdatePlaylistModal'
 
+import UpdateSongInPlaylistModal from './UpdateSongInPlaylistModal/UpdateSongInPlaylistModal'
 import { CustomizeModal } from '../../components'
 import images from '../../assets/images'
 import styles from './Playlist.module.scss'
@@ -23,6 +25,7 @@ function Playlist() {
     value: playlistStoreValue,
     type: playlistStoreType,
   } = useAppSelector(playlistStore)
+  const { status: ownerStoreStatus, value: ownerStoreValue } = useAppSelector(ownerStore)
 
   useEffect(() => {
     dispatch(updateHeaderTitle('Playlist'))
@@ -35,6 +38,7 @@ function Playlist() {
           CommonHelper.showErrorMess(`Lấy dữ liệu thất bại`)
           break
         case EStatusState.Success:
+          dispatch(resetStatus())
           break
       }
     }
@@ -46,20 +50,21 @@ function Playlist() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Thêm playlist thành công`)
+          dispatch(resetStatus())
           break
       }
     }
-    if (playlistStoreType === ETypePlaylistState.Update) {
-      switch (playlistStoreStatus) {
-        case EStatusState.Failed:
-          CommonHelper.showErrorMess(`Chỉnh sửa thông tin playlist thất bại`)
-          break
-        case EStatusState.Success:
-          setOpenCreateUpdateModal(false)
-          CommonHelper.showSuccessMess(`Chỉnh sửa thông tin playlist thành công`)
-          break
-      }
-    }
+    // if (playlistStoreType === ETypePlaylistState.Update) {
+    //   switch (playlistStoreStatus) {
+    //     case EStatusState.Failed:
+    //       CommonHelper.showErrorMess(`Chỉnh sửa thông tin playlist thất bại`)
+    //       break
+    //     case EStatusState.Success:
+    //       setOpenCreateUpdateModal(false)
+    //       CommonHelper.showSuccessMess(`Chỉnh sửa thông tin playlist thành công`)
+    //       break
+    //   }
+    // }
     if (playlistStoreType === ETypePlaylistState.UpdateName) {
       switch (playlistStoreStatus) {
         case EStatusState.Failed:
@@ -68,6 +73,7 @@ function Playlist() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Chỉnh sửa tên playlist thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -79,6 +85,7 @@ function Playlist() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Chỉnh sửa trạng thái playlist thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -90,6 +97,19 @@ function Playlist() {
         case EStatusState.Success:
           setOpenDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa playlist ${playlist?.name} thành công`)
+          dispatch(resetStatus())
+          break
+      }
+    }
+    if (playlistStoreType === ETypePlaylistState.UpdateSongInPlaylist) {
+      switch (playlistStoreStatus) {
+        case EStatusState.Failed:
+          CommonHelper.showErrorMess(`Chỉnh sửa bài hát trong playlist ${playlist?.name} thất bại`)
+          break
+        case EStatusState.Success:
+          setOpenDeleteModal(false)
+          CommonHelper.showSuccessMess(`Chỉnh sửa bài hát trong playlist ${playlist?.name} thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -115,13 +135,25 @@ function Playlist() {
       renderCell: (params: GridRenderCellParams<IPlaylist>) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <IconButton color="primary" onClick={() => clickUpdateButton(params.row)}>
+            <IconButton
+              disabled={params.row.userName !== ownerStoreValue?.email}
+              color="primary"
+              onClick={() => clickUpdateButton(params.row)}
+            >
               <Edit />
             </IconButton>
-            <IconButton color="success" onClick={() => clickUpdateButton(params.row)}>
-              <AddCircleOutline />
+            <IconButton
+              disabled={params.row.userName !== ownerStoreValue?.email}
+              color="success"
+              onClick={() => clickUpdateSongInPlaylistButton(params.row)}
+            >
+              <LibraryMusic />
             </IconButton>
-            <IconButton disabled={params.row.userId != 18} onClick={() => clickDeleteButton(params.row)} color="error">
+            <IconButton
+              disabled={params.row.userName !== ownerStoreValue?.email}
+              onClick={() => clickDeleteButton(params.row)}
+              color="error"
+            >
               <Delete />
             </IconButton>
           </div>
@@ -139,6 +171,12 @@ function Playlist() {
   }
   const handleDeletePlaylist = () => {
     dispatch(deletePlaylist(playlist?.playlistId as number))
+  }
+  // insert song to playlist
+  const [openUpdateSongInPlaylistModal, setOpenUpdateSongInPlaylistModal] = useState(false)
+  const clickUpdateSongInPlaylistButton = (playlistClicked: IPlaylist) => {
+    setPlaylist(playlistClicked)
+    setOpenUpdateSongInPlaylistModal(true)
   }
   // create/update
   const [openCreateUpdateModal, setOpenCreateUpdateModal] = useState(false)
@@ -182,13 +220,20 @@ function Playlist() {
         setOpen={setOpenCreateUpdateModal}
         isUpdate={isUpdateModal}
       />
+      {openUpdateSongInPlaylistModal && (
+        <UpdateSongInPlaylistModal
+          playlist={playlist as IPlaylist}
+          open={openUpdateSongInPlaylistModal}
+          setOpen={setOpenUpdateSongInPlaylistModal}
+        />
+      )}
 
       <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa playlist{' '}
-          <h4 className="danger-color" style={{ display: 'inline' }}>
+          <span className="danger-color" style={{ fontSize: '20px' }}>
             {playlist?.name}
-          </h4>
+          </span>
           ?
         </p>
         <div className="bottom-button-group">

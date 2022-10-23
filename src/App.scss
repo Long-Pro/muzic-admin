@@ -50,8 +50,16 @@ body {
     }
   }
 }
+.d-flex {
+  display: flex;
+}
+.justify-content-center {
+  display: flex;
+  justify-content: center;
+}
 .danger-color {
   color: #d32f2f;
+  font-weight: 500;
 }
 .error-form-text {
   font-size: 0.75rem;

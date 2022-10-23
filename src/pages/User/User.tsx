@@ -6,7 +6,7 @@ import { Delete } from '@mui/icons-material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { ETypeState, EStatusState } from '../../constants/common'
-import { getAllUser, deleteUser, userStore } from '../../features/user/userSlice'
+import { getAllUser, deleteUser, userStore, resetStatus } from '../../features/user/userSlice'
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { IUser } from '../../Interfaces/store/IUser'
 import { CommonHelper } from '../../utils/CommonHelper'
@@ -30,6 +30,7 @@ function User() {
           CommonHelper.showErrorMess(`Lấy dữ liệu thất bại`)
           break
         case EStatusState.Success:
+          dispatch(resetStatus())
           break
       }
     }
@@ -41,6 +42,7 @@ function User() {
         case EStatusState.Success:
           setShowDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa người dùng ${user?.name} thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -117,9 +119,9 @@ function User() {
       <CustomizeModal title={`Xác nhận`} open={showDeleteModal} setOpen={setShowDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa người dùng{' '}
-          <h4 className="danger-color" style={{ display: 'inline' }}>
+          <span className="danger-color" style={{ fontSize: '20px' }}>
             {user?.name}
-          </h4>
+          </span>
           ?
         </p>
         <div className="bottom-button-group">

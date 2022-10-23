@@ -6,7 +6,7 @@ import { Delete, Edit } from '@mui/icons-material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { ETypeState, EStatusState } from '../../constants/common'
-import { getAllArtist, deleteArtist, artistStore } from '../../features/artist/artistSlice'
+import { getAllArtist, deleteArtist, artistStore, resetStatus } from '../../features/artist/artistSlice'
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { IArtist } from '../../Interfaces/store/IArtist'
 import { CommonHelper } from '../../utils/CommonHelper'
@@ -31,6 +31,7 @@ function Artist() {
           CommonHelper.showErrorMess(`Lấy dữ liệu thất bại`)
           break
         case EStatusState.Success:
+          dispatch(resetStatus())
           break
       }
     }
@@ -42,6 +43,7 @@ function Artist() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Thêm ca sĩ thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -53,6 +55,7 @@ function Artist() {
         case EStatusState.Success:
           setOpenCreateUpdateModal(false)
           CommonHelper.showSuccessMess(`Chỉnh sửa thông tin ca sĩ thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -64,6 +67,7 @@ function Artist() {
         case EStatusState.Success:
           setOpenDeleteModal(false)
           CommonHelper.showSuccessMess(`Xóa ca sĩ ${artist?.name} thành công`)
+          dispatch(resetStatus())
           break
       }
     }
@@ -157,11 +161,12 @@ function Artist() {
       <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa ca sĩ{' '}
-          <h4 className="danger-color" style={{ display: 'inline' }}>
+          <span className="danger-color" style={{ fontSize: '20px' }}>
             {artist?.name}
-          </h4>
+          </span>
           ?
         </p>
+
         <div className="bottom-button-group">
           <Button size="small" variant="contained" color="error" onClick={handleDeleteArtist}>
             Xóa

@@ -15,10 +15,20 @@ export interface IPlaylistCreate {
   name: string
   isPublic: boolean
 }
-export interface IPlaylistUpdate extends IPlaylistCreate {
-  playlistId: number
-}
+
 export interface IPlaylistUpdateName {
   playlistId: number
   name: string
+}
+export interface IPlaylistInsertSong {
+  playlistId: number
+  listSongId: number[]
+}
+export interface IPlaylistRemoveSong {
+  playlistId: number
+  songId: number
+}
+export interface IPlaylistUpdateSong {
+  playlistId: number
+  listSongId: number[]
 }

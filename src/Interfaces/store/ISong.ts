@@ -14,7 +14,8 @@ export interface ISong {
   artistName: string
   artistId: number
   isLiked: boolean
-  _id?: any
+  _id?: number
+  _label?: string
 }
 export interface ISongCreate {
   name: string

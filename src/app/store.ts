@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import counterReducer from '../features/counter/counterSlice'
 import ownerReducer from '../features/owner/ownerSlice'
 import appReducer from '../features/app/appSlice'
 import songReducer from '../features/song/songSlice'
@@ -9,7 +8,6 @@ import playlistReducer from '../features/playlist/playlistSlice'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     owner: ownerReducer,
     app: appReducer,
     song: songReducer,

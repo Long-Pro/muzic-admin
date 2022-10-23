@@ -1,0 +1,8 @@
+.wrapper {
+  width: 620px;
+  .chip-wrapper {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+  }
+}

@@ -6,13 +6,8 @@ import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { CustomizeModal } from '../../../components'
 import images from '../../../assets/images'
 import styles from './CreateUpdatePlaylistModal.module.scss'
-import {
-  createPlaylist,
-  updatePlaylist,
-  updateIsPublicPlaylist,
-  updateNamePlaylist,
-} from '../../../features/playlist/playlistSlice'
-import { IPlaylist, IPlaylistCreate, IPlaylistUpdate, IPlaylistUpdateName } from '../../../Interfaces/store/IPlaylist'
+import { createPlaylist, updateIsPublicPlaylist, updateNamePlaylist } from '../../../features/playlist/playlistSlice'
+import { IPlaylist, IPlaylistCreate, IPlaylistUpdateName } from '../../../Interfaces/store/IPlaylist'
 const cx = classNames.bind(styles)
 interface IProp {
   playlist?: IPlaylist

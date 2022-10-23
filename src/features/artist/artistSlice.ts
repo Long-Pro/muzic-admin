@@ -37,7 +37,11 @@ export const updateArtist = createAsyncThunk('artist/updateArtist', async (data:
 export const artistSlice = createSlice({
   name: 'artist',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = EStatusState.Idle
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllArtist.pending, (state) => {
@@ -104,7 +108,7 @@ export const artistSlice = createSlice({
   },
 })
 
-export const {} = artistSlice.actions
+export const { resetStatus } = artistSlice.actions
 
 export const artistStore = (state: RootState) => state.artist
 

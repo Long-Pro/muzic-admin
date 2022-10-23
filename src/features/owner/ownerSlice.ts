@@ -29,7 +29,11 @@ export const login = createAsyncThunk('owner/login', async (login: ILogin) => {
 export const ownerSlice = createSlice({
   name: 'owner',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = EStatusState.Idle
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -45,7 +49,7 @@ export const ownerSlice = createSlice({
   },
 })
 
-export const {} = ownerSlice.actions
+export const { resetStatus } = ownerSlice.actions
 
 export const ownerStore = (state: RootState) => state.owner
 

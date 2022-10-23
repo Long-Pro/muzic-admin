@@ -29,7 +29,11 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async (id: number)
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = EStatusState.Idle
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllUser.pending, (state) => {
@@ -65,7 +69,7 @@ export const userSlice = createSlice({
   },
 })
 
-export const {} = userSlice.actions
+export const { resetStatus } = userSlice.actions
 
 export const userStore = (state: RootState) => state.user
 

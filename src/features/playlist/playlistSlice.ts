@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState, AppThunk } from '../../app/store'
 import * as service from './playlistServiceX'
-import { IPlaylist, IPlaylistCreate, IPlaylistUpdate, IPlaylistUpdateName } from '../../Interfaces/store/IPlaylist'
+import {
+  IPlaylist,
+  IPlaylistCreate,
+  IPlaylistInsertSong,
+  IPlaylistRemoveSong,
+  IPlaylistUpdateName,
+  IPlaylistUpdateSong,
+} from '../../Interfaces/store/IPlaylist'
 
 import { EStatusState, ETypePlaylistState } from '../../constants/common'
 export interface ownerState {
@@ -21,32 +28,49 @@ export const getAllPlaylist = createAsyncThunk('playlist/getAllPlaylist', async 
 })
 export const deletePlaylist = createAsyncThunk('playlist/deletePlaylist', async (id: number) => {
   let res = await service.deletePlaylist(id)
-  return res.data
+  return id
 })
 export const createPlaylist = createAsyncThunk('playlist/createPlaylist', async (data: IPlaylistCreate) => {
   let res = await service.createPlaylist(data)
   return res.data
 })
-export const updatePlaylist = createAsyncThunk('playlist/updatePlaylist', async (data: IPlaylistUpdate) => {
-  let res = await service.updatePlaylist(data)
-  return res.data
-})
 export const updateIsPublicPlaylist = createAsyncThunk('playlist/updateIsPublicPlaylist', async (id: number) => {
-  console.log(id)
-
   let res = await service.updateIsPublicPlaylist(id)
-  console.log(res)
-
   return res.data
 })
 export const updateNamePlaylist = createAsyncThunk('playlist/updateNamePlaylist', async (data: IPlaylistUpdateName) => {
   let res = await service.updateNamePlaylist(data)
   return res.data
 })
+export const insertSongToPlaylist = createAsyncThunk(
+  'playlist/insertSongToPlaylist',
+  async (data: IPlaylistInsertSong) => {
+    let res = await service.insertSongToPlaylist(data)
+    return res.data
+  },
+)
+export const remoteSongFromPlaylist = createAsyncThunk(
+  'playlist/remoteSongToPlaylist',
+  async (data: IPlaylistRemoveSong) => {
+    let res = await service.remoteSongFromPlaylist(data)
+    return data
+  },
+)
+export const updateSongInPlaylist = createAsyncThunk(
+  'playlist/updateSongInPlaylist',
+  async (data: IPlaylistUpdateSong) => {
+    let res = await service.updateSongInPlaylist(data)
+    return res.data
+  },
+)
 export const playlistSlice = createSlice({
   name: 'playlist',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = EStatusState.Idle
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllPlaylist.pending, (state) => {
@@ -63,22 +87,21 @@ export const playlistSlice = createSlice({
         state.type = ETypePlaylistState.Get
       })
 
-    // builder
-    //   .addCase(deletePlaylist.pending, (state) => {
-    //     state.status = EStatusState.Loading
-    //     state.type = ETypePlaylistState.Delete
-    //   })
-    //   .addCase(deletePlaylist.fulfilled, (state, action) => {
-    //     state.status = EStatusState.Success
-    //     state.type = ETypePlaylistState.Delete
-    //     const index = state.value.findIndex((x) => x.id === action.payload.id)
-    //     state.value[index] = action.payload
-    //     state.value = [...state.value]
-    //   })
-    //   .addCase(deletePlaylist.rejected, (state) => {
-    //     state.status = EStatusState.Failed
-    //     state.type = ETypePlaylistState.Delete
-    //   })
+    builder
+      .addCase(deletePlaylist.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypePlaylistState.Delete
+      })
+      .addCase(deletePlaylist.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypePlaylistState.Delete
+        const arr = state.value.filter((x) => x.playlistId !== action.payload)
+        state.value = [...arr]
+      })
+      .addCase(deletePlaylist.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypePlaylistState.Delete
+      })
 
     builder
       .addCase(createPlaylist.pending, (state) => {
@@ -94,23 +117,6 @@ export const playlistSlice = createSlice({
         state.status = EStatusState.Failed
         state.type = ETypePlaylistState.Create
       })
-
-    // builder
-    //   .addCase(updatePlaylist.pending, (state) => {
-    //     state.status = EStatusState.Loading
-    //     state.type = ETypePlaylistState.Update
-    //   })
-    //   .addCase(updatePlaylist.fulfilled, (state, action) => {
-    //     state.status = EStatusState.Success
-    //     state.type = ETypePlaylistState.Update
-    //     const index = state.value.findIndex((x) => x.id === action.payload.id)
-    //     state.value[index] = action.payload
-    //     state.value = [...state.value]
-    //   })
-    //   .addCase(updatePlaylist.rejected, (state) => {
-    //     state.status = EStatusState.Failed
-    //     state.type = ETypePlaylistState.Update
-    //   })
 
     builder
       .addCase(updateNamePlaylist.pending, (state) => {
@@ -144,10 +150,62 @@ export const playlistSlice = createSlice({
         state.status = EStatusState.Failed
         state.type = ETypePlaylistState.UpdateIsPublic
       })
+
+    builder
+      .addCase(insertSongToPlaylist.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypePlaylistState.InsertSongToPlaylist
+      })
+      .addCase(insertSongToPlaylist.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypePlaylistState.InsertSongToPlaylist
+        const index = state.value.findIndex((x) => x.playlistId === action.payload.playlistId)
+        state.value[index] = action.payload
+        state.value = [...state.value]
+      })
+      .addCase(insertSongToPlaylist.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypePlaylistState.InsertSongToPlaylist
+      })
+
+    builder
+      .addCase(remoteSongFromPlaylist.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypePlaylistState.RemoteSongFromPlaylist
+      })
+      .addCase(remoteSongFromPlaylist.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypePlaylistState.RemoteSongFromPlaylist
+        const index = state.value.findIndex((x) => x.playlistId === action.payload.playlistId)
+        state.value[index].songResponses = state.value[index].songResponses.filter(
+          (x) => x.songId !== action.payload.songId,
+        )
+        state.value = [...state.value]
+      })
+      .addCase(remoteSongFromPlaylist.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypePlaylistState.RemoteSongFromPlaylist
+      })
+    builder
+      .addCase(updateSongInPlaylist.pending, (state) => {
+        state.status = EStatusState.Loading
+        state.type = ETypePlaylistState.UpdateSongInPlaylist
+      })
+      .addCase(updateSongInPlaylist.fulfilled, (state, action) => {
+        state.status = EStatusState.Success
+        state.type = ETypePlaylistState.UpdateSongInPlaylist
+        const index = state.value.findIndex((x) => x.playlistId === action.payload.playlistId)
+        state.value[index] = action.payload
+        state.value = [...state.value]
+      })
+      .addCase(updateSongInPlaylist.rejected, (state) => {
+        state.status = EStatusState.Failed
+        state.type = ETypePlaylistState.UpdateSongInPlaylist
+      })
   },
 })
 
-export const {} = playlistSlice.actions
+export const { resetStatus } = playlistSlice.actions
 
 export const playlistStore = (state: RootState) => state.playlist
 
