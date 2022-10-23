@@ -6,6 +6,7 @@ export interface IArtist {
   code: string
   isDeleted: boolean
   _id?: number
+  _label?: string
 }
 export interface IArtistCreate {
   name: string

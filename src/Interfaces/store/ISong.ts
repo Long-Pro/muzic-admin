@@ -19,13 +19,22 @@ export interface ISong {
 export interface ISongCreate {
   name: string
   country: string
-  artistId?: number
+  artistId: number
   code?: string
+
+  lyric: any
+  musicFile: any
+  thumbnail: any
+}
+export interface ISongUpdate {
+  id: number
+  name: string
+  country: string
+  artistId: number
+  code?: string
+  //isDeleted: boolean
 
   lyric?: any
   musicFile?: any
   thumbnail?: any
-}
-export interface ISongUpdate extends ISongCreate {
-  id: number
 }

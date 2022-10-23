@@ -26,7 +26,6 @@ import {
 } from '@mui/material'
 import { Visibility, Edit, Delete } from '@mui/icons-material'
 import CreateUpdateSongModal from './CreateUpdateSongModal/CreateUpdateSongModal'
-import SongDetail from './SongDetail/SongDetail'
 import { CustomizeModal } from '../../components'
 const cx = classNames.bind(styles)
 function Song() {

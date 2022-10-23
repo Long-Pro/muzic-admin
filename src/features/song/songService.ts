@@ -14,8 +14,6 @@ export async function deleteSong(id: number): Promise<{ data: ISong }> {
   return await _axios.put(link)
 }
 export async function createSong(data: ISongCreate): Promise<{ data: ISong }> {
-  console.log(data)
-
   const link = `/api/song`
   return await _axios.post(link, data)
 }

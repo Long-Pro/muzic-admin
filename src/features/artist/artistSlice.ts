@@ -46,7 +46,7 @@ export const artistSlice = createSlice({
       })
       .addCase(getAllArtist.fulfilled, (state, action) => {
         state.status = EStatusState.Success
-        state.value = action.payload
+        state.value = action.payload.map((x) => ({ ...x, _label: `${x.name} - ${x.id}` }))
         state.type = ETypeState.Get
       })
       .addCase(getAllArtist.rejected, (state) => {

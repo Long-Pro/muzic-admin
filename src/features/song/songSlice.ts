@@ -17,7 +17,6 @@ const initialState: ownerState = {
 }
 export const getAllSong = createAsyncThunk('song/getAllSong', async () => {
   let res = await service.getAllSong()
-  console.log(res)
   return (res.data as any).data
 })
 export const deleteSong = createAsyncThunk('song/deleteSong', async (id: number) => {

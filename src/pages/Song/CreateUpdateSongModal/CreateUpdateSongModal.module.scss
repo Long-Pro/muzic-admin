@@ -9,4 +9,12 @@
   width: 100%;
   justify-content: space-between;
   margin-top: 10px;
+  .button-wrapper {
+    width: 160px;
+    p {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
