@@ -23,9 +23,9 @@ export interface ISongCreate {
   artistId: number
   code?: string
 
-  lyric: any
+  lyricFile: any
   musicFile: any
-  thumbnail: any
+  thumbnailFile: any
 }
 export interface ISongUpdate {
   id: number
@@ -35,7 +35,7 @@ export interface ISongUpdate {
   code?: string
   //isDeleted: boolean
 
-  lyric?: any
+  lyricFile?: any
   musicFile?: any
-  thumbnail?: any
+  thumbnailFile?: any
 }

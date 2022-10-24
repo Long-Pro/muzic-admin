@@ -54,17 +54,6 @@ function Playlist() {
           break
       }
     }
-    // if (playlistStoreType === ETypePlaylistState.Update) {
-    //   switch (playlistStoreStatus) {
-    //     case EStatusState.Failed:
-    //       CommonHelper.showErrorMess(`Chỉnh sửa thông tin playlist thất bại`)
-    //       break
-    //     case EStatusState.Success:
-    //       setOpenCreateUpdateModal(false)
-    //       CommonHelper.showSuccessMess(`Chỉnh sửa thông tin playlist thành công`)
-    //       break
-    //   }
-    // }
     if (playlistStoreType === ETypePlaylistState.UpdateName) {
       switch (playlistStoreStatus) {
         case EStatusState.Failed:
@@ -107,7 +96,7 @@ function Playlist() {
           CommonHelper.showErrorMess(`Chỉnh sửa bài hát trong playlist ${playlist?.name} thất bại`)
           break
         case EStatusState.Success:
-          setOpenDeleteModal(false)
+          setOpenUpdateSongInPlaylistModal(false)
           CommonHelper.showSuccessMess(`Chỉnh sửa bài hát trong playlist ${playlist?.name} thành công`)
           dispatch(resetStatus())
           break

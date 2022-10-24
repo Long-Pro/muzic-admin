@@ -15,8 +15,6 @@ export async function createArtist(data: IArtistCreate): Promise<{ data: IArtist
   return await _axios.post(link, data)
 }
 export async function updateArtist(data: IArtistUpdate): Promise<{ data: IArtist }> {
-  console.log(data)
-
   const link = `/api/artist`
   return await _axios.put(link, data)
 }

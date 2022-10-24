@@ -96,6 +96,19 @@ function Song() {
     { field: 'country', headerName: 'Quốc gia', flex: 1 },
     { field: 'artistName', headerName: 'Ca sĩ', flex: 1 },
     {
+      field: 'thumbnail',
+      headerName: 'Ảnh',
+      headerAlign: 'center',
+      disableExport: true,
+      renderCell: (params: GridRenderCellParams<ISong>) => {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <img src={params.row.thumbnail} alt="" width={50} height={40} />
+          </div>
+        )
+      },
+    },
+    {
       field: 'isDeleted',
       headerName: 'Trạng thái',
       flex: 1,

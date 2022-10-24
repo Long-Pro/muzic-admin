@@ -37,6 +37,10 @@ export async function remoteSongFromPlaylist(data: IPlaylistRemoveSong): Promise
   return await _axios.put(link, data)
 }
 export async function updateSongInPlaylist(data: IPlaylistUpdateSong): Promise<{ data: IPlaylist }> {
-  const link = `/api/playlist/updateSong`
-  return await _axios.post(link, data)
+  const link = `/api/playlist/addSong/admin`
+  return await _axios.post(link, data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }

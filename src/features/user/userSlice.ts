@@ -17,7 +17,6 @@ const initialState: userState = {
 }
 export const getAllUser = createAsyncThunk('user/getAllUser', async () => {
   let res = await service.getAllUser()
-  console.log(res)
   return res.data
 })
 export const deleteUser = createAsyncThunk('user/deleteUser', async (id: number) => {

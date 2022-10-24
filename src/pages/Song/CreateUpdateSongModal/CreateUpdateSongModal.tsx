@@ -24,9 +24,9 @@ interface IErroFormMessage {
   name: string
   country: string
   artist: string
-  lyric?: string
+  lyricFile?: string
   musicFile?: string
-  thumbnail?: string
+  thumbnailFile?: string
 }
 interface IFormValue {
   name: string
@@ -34,9 +34,9 @@ interface IFormValue {
   artist?: IArtist | null
   code?: string
 
-  lyric?: any
+  lyricFile?: any
   musicFile?: any
-  thumbnail?: any
+  thumbnailFile?: any
 }
 
 function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
@@ -65,9 +65,9 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
     country: (isUpdate ? song?.country : '') as string,
     artist: isUpdate ? artistStoreValue.find((x) => x.id === song?.artistId) : null,
 
-    lyric: null,
+    lyricFile: null,
     musicFile: null,
-    thumbnail: null,
+    thumbnailFile: null,
   })
   useEffect(() => {
     setTitle(isUpdate ? `Chỉnh sửa thông tin bài hát ${song?.name}` : 'Thêm mới bài hát')
@@ -78,24 +78,25 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
       country: (isUpdate ? song?.country : '') as string,
       artist: isUpdate ? artistStoreValue.find((x: IArtist) => x.id === song?.artistId) : null,
 
-      lyric: null,
+      lyricFile: null,
       musicFile: null,
-      thumbnail: null,
+      thumbnailFile: null,
     })
+    setFormDataMessage({ name: '', country: '', artist: '', lyricFile: '', musicFile: '', thumbnailFile: '' })
   }, [song, open, isUpdate])
   const [formDataMessage, setFormDataMessage] = useState<IErroFormMessage>({
     name: '',
     country: '',
     artist: '',
-    lyric: '',
+    lyricFile: '',
     musicFile: '',
-    thumbnail: '',
+    thumbnailFile: '',
   })
   const changeArtistAutocomplete = (event: any, newValue: IArtist | null) => {
-    formDataValue.artist = newValue
+    setFormDataValue({ ...formDataValue, artist: newValue })
   }
   const handleCreateSong = () => {
-    const { name, country, artist, code, lyric, musicFile, thumbnail } = formDataValue
+    const { name, country, artist, code, lyricFile, musicFile, thumbnailFile } = formDataValue
     console.log(formDataValue)
 
     const errorFormMessage: IErroFormMessage = {
@@ -103,18 +104,18 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
       country: country ? '' : 'Không hợp lệ',
       artist: artist ? '' : 'Vui lòng chọn',
       musicFile: musicFile ? '' : 'Vui lòng chọn',
-      lyric: lyric ? '' : 'Vui lòng chọn',
-      thumbnail: thumbnail ? '' : 'Vui lòng chọn',
+      lyricFile: lyricFile ? '' : 'Vui lòng chọn',
+      thumbnailFile: thumbnailFile ? '' : 'Vui lòng chọn',
     }
     console.log(errorFormMessage)
 
     setFormDataMessage({ ...errorFormMessage })
     if (Object.values(errorFormMessage).every((x) => x === '')) {
-      dispatch(createSong({ country, name, code, artistId: artist?.id as number, musicFile, lyric, thumbnail }))
+      dispatch(createSong({ country, name, code, artistId: artist?.id as number, musicFile, lyricFile, thumbnailFile }))
     }
   }
   const handleUpdateSong = () => {
-    const { name, country, artist, code, lyric, musicFile, thumbnail } = formDataValue
+    const { name, country, artist, code, lyricFile, musicFile, thumbnailFile } = formDataValue
     const errorFormMessage: IErroFormMessage = {
       name: name ? '' : 'Không hợp lệ',
       country: country ? '' : 'Không hợp lệ',
@@ -124,17 +125,23 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
     if (Object.values(errorFormMessage).every((x) => x === '')) {
       const data: ISongUpdate = { id: song?.songId as number, country, name, code, artistId: artist?.id as number }
       if (musicFile) data.musicFile = musicFile
-      if (lyric) data.lyric = lyric
-      if (thumbnail) data.thumbnail = thumbnail
+      if (lyricFile) data.lyricFile = lyricFile
+      if (thumbnailFile) data.thumbnailFile = thumbnailFile
 
       dispatch(updateSong(data))
     }
   }
   const chooseFile = (e: any) => {
     const key = e.target.dataset['key']
-    setFormDataValue({ ...formDataValue, [key]: e.target.files[0] })
-  }
+    // console.log({ key, file: e.target.value })\
+    console.log({ key, file: e.target })
 
+    setFormDataValue({ ...formDataValue, [key]: e.target.files[0] })
+    //setFormDataValue({ ...formDataValue, [key]: e.target.value })
+  }
+  useEffect(() => {
+    console.log(formDataValue)
+  }, [formDataValue])
   return (
     <CustomizeModal open={open} setOpen={setOpen} title={title}>
       <div className={cx('field-wrapper')}>
@@ -205,32 +212,34 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
         <div className={cx('button-wrapper')}>
           <Button variant="contained" component="label" sx={{ width: '160px' }}>
             File music (.mp3)
-            <input hidden accept=".mp3" multiple type="file" onChange={chooseFile} data-key="musicFile" />
+            <input hidden accept=".mp3" type="file" onChange={chooseFile} data-key="musicFile" />
           </Button>
           {!isUpdate && formDataMessage.musicFile && (
             <p className="danger-color error-form-text">{formDataMessage.musicFile}</p>
           )}
           <p>{formDataValue?.musicFile?.name}</p>
         </div>
+
         <div className={cx('button-wrapper')}>
           <Button variant="contained" component="label" onChange={chooseFile} sx={{ width: '160px' }}>
             File lyric (.lrc)
-            <input hidden accept=".lrc" multiple type="file" onChange={chooseFile} data-key="lyric" />
+            <input hidden accept=".lrc" type="file" onChange={chooseFile} data-key="lyricFile" />
           </Button>
-          {!isUpdate && formDataMessage.musicFile && (
-            <p className="danger-color error-form-text">{formDataMessage.lyric}</p>
+          {!isUpdate && formDataMessage.lyricFile && (
+            <p className="danger-color error-form-text">{formDataMessage.lyricFile}</p>
           )}
-          <p>{formDataValue.lyric?.name}</p>
+          <p>{formDataValue.lyricFile?.name}</p>
         </div>
+
         <div className={cx('button-wrapper')}>
           <Button variant="contained" component="label" sx={{ width: '160px' }}>
             File thumbnail
-            <input hidden accept="image/*" multiple type="file" onChange={chooseFile} data-key="thumbnail" />
+            <input hidden accept="image/*" type="file" onChange={chooseFile} data-key="thumbnailFile" />
           </Button>
-          {!isUpdate && formDataMessage.musicFile && (
-            <p className="danger-color error-form-text">{formDataMessage.thumbnail}</p>
+          {!isUpdate && formDataMessage.thumbnailFile && (
+            <p className="danger-color error-form-text">{formDataMessage.thumbnailFile}</p>
           )}
-          <p>{formDataValue.thumbnail?.name}</p>
+          <p>{formDataValue.thumbnailFile?.name}</p>
         </div>
       </div>
       <div className="bottom-button-group">

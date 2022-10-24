@@ -29,6 +29,7 @@ function CreateUpdateArtistModal({ artist, open, setOpen, isUpdate }: IProp) {
   })
   useEffect(() => {
     setFormDataValue({ name: (isUpdate ? artist?.name : '') as string, code: isUpdate ? artist?.code : '' })
+    setTitle(isUpdate ? `Chỉnh sửa thông tin ca sĩ ${artist?.name}` : 'Thêm mới ca sĩ')
   }, [artist, open, isUpdate])
   const [formDataMessage, setFormDataMessage] = useState<IErroFormMessage>({
     name: '',

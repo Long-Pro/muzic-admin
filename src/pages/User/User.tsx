@@ -113,6 +113,8 @@ function User() {
             rowsPerPageOptions={[10, 20, 50]}
             pagination
             components={{ Toolbar: GridToolbar }}
+            disableSelectionOnClick
+            autoPageSize
           />
         </Box>
       </div>

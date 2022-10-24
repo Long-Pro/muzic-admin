@@ -5,7 +5,11 @@ import reportWebVitals from './reportWebVitals'
 import { store } from './app/store'
 import { Provider } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { viVN } from '@mui/material/locale'
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+const theme = createTheme(viVN)
 root.render(
   // <React.StrictMode>
   //   <App />
@@ -17,7 +21,9 @@ root.render(
   //   </Provider>
   // </React.StrictMode>,
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
     <ToastContainer />
   </Provider>,
 )
