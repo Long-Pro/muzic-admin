@@ -6,7 +6,7 @@ export async function getAllArtist(): Promise<{ data: IArtist[] }> {
   const link = `/api/artist`
   return await _axios.get(link)
 }
-export async function deleteArtist(id: number): Promise<{ data: IArtist }> {
+export async function toggleIsDeleteArtist(id: number): Promise<{ data: IArtist }> {
   const link = `/api/artist/delete/${id}`
   return await _axios.put(link)
 }

@@ -19,8 +19,8 @@ export const getAllArtist = createAsyncThunk('artist/getAllArtist', async () => 
   let res = await service.getAllArtist()
   return res.data
 })
-export const deleteArtist = createAsyncThunk('artist/deleteArtist', async (id: number) => {
-  let res = await service.deleteArtist(id)
+export const toggleIsDeleteArtist = createAsyncThunk('artist/toggleIsDeleteArtist', async (id: number) => {
+  let res = await service.toggleIsDeleteArtist(id)
   console.log(res)
   return res.data
 })
@@ -57,21 +57,21 @@ export const artistSlice = createSlice({
         state.type = ETypeState.Get
       })
     builder
-      .addCase(deleteArtist.pending, (state) => {
+      .addCase(toggleIsDeleteArtist.pending, (state) => {
         state.status = EStatusState.Loading
-        state.type = ETypeState.Delete
+        state.type = ETypeState.ToggleIsDelete
       })
-      .addCase(deleteArtist.fulfilled, (state, action) => {
+      .addCase(toggleIsDeleteArtist.fulfilled, (state, action) => {
         state.status = EStatusState.Success
-        state.type = ETypeState.Delete
+        state.type = ETypeState.ToggleIsDelete
 
         const index = state.value.findIndex((x) => x.id === action.payload.id)
         state.value[index] = action.payload
         state.value = [...state.value]
       })
-      .addCase(deleteArtist.rejected, (state) => {
+      .addCase(toggleIsDeleteArtist.rejected, (state) => {
         state.status = EStatusState.Failed
-        state.type = ETypeState.Delete
+        state.type = ETypeState.ToggleIsDelete
       })
     builder
       .addCase(createArtist.pending, (state) => {

@@ -25,8 +25,9 @@ import {
   IconButton,
   Switch,
 } from '@mui/material'
-import { Visibility, Edit, Delete } from '@mui/icons-material'
+import { Visibility, Edit, Delete, PlayCircleFilledWhite } from '@mui/icons-material'
 import CreateUpdateSongModal from './CreateUpdateSongModal/CreateUpdateSongModal'
+import DetailSongModal from './DetailSongModal/DetailSongModal'
 import { CustomizeModal } from '../../components'
 const cx = classNames.bind(styles)
 function Song() {
@@ -122,7 +123,7 @@ function Song() {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Switch
-              checked={params.row.isDeleted}
+              checked={!params.row.isDeleted}
               onChange={(e) => toggleSwitchIsDelete(e, params.row)}
               inputProps={{ 'aria-label': 'controlled' }}
             />
@@ -140,9 +141,9 @@ function Song() {
       renderCell: (params: GridRenderCellParams<ISong>) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'space-evenly', flex: 1 }}>
-            {/* <IconButton color="warning" onClick={() => clickDetailButton(params.row)}>
-              <Visibility />
-            </IconButton> */}
+            <IconButton color="warning" onClick={() => clickDetailButton(params.row)}>
+              <PlayCircleFilledWhite />
+            </IconButton>
 
             <IconButton color="primary" onClick={() => clickUpdateButton(params.row)}>
               <Edit />
@@ -160,7 +161,6 @@ function Song() {
     type: TypeToggleIsDeleteModal.Delete,
     title: ``,
   })
-
   const toggleSwitchIsDelete = (event: ChangeEvent<HTMLInputElement>, songClicked: ISong) => {
     setSong(songClicked)
     const isActive = event.target.checked
@@ -181,6 +181,12 @@ function Song() {
     setSong(songClicked)
     setOpenCreateUpdateModal(true)
     setIsUpdateModal(true)
+  }
+  // detail
+  const [openDetailModal, setOpenDetailModal] = useState(false)
+  const clickDetailButton = (songClicked: ISong) => {
+    setSong(songClicked)
+    setOpenDetailModal(true)
   }
 
   return (
@@ -233,6 +239,7 @@ function Song() {
           </Button>
         </div>
       </CustomizeModal>
+      {song && <DetailSongModal open={openDetailModal} setOpen={setOpenDetailModal} song={song} />}
     </div>
   )
 }

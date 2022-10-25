@@ -50,6 +50,7 @@ function CreateUpdatePlaylistModal({ playlist, open, setOpen, isUpdate }: IProp)
         ? (autocompleteOptions.find((x) => x.isPublic === playlist?.isPublic) as IAutocompleteOption)
         : null,
     })
+    setTitle(isUpdate ? `Chỉnh sửa thông tin playlist ${playlist?.name}` : 'Thêm mới playlist')
   }, [playlist, open, isUpdate])
   const [formDataMessage, setFormDataMessage] = useState<IErrorFormMessage>({
     name: '',

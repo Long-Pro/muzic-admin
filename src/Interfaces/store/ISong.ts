@@ -2,7 +2,6 @@ export interface ISong {
   createdDate: Date
   updatedDate: Date
   isDeleted: boolean
-  //favouriteRepository: null,
   songId: number
   name: string
   code: string

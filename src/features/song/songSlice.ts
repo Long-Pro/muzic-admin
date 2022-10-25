@@ -25,6 +25,8 @@ export const toggleIsDeleteSong = createAsyncThunk('song/toggleIsDeleteSong', as
 })
 export const createSong = createAsyncThunk('song/createSong', async (data: ISongCreate) => {
   let res = await service.createSong(data)
+  console.log(res.data)
+
   return res.data
 })
 export const updateSong = createAsyncThunk('song/updateSong', async (data: ISongUpdate) => {

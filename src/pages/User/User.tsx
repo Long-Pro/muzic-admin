@@ -79,7 +79,7 @@ function User() {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Switch
-              checked={params.row.isDeleted}
+              checked={!params.row.isDeleted}
               onChange={(e) => toggleSwitchIsDelete(e, params.row)}
               inputProps={{ 'aria-label': 'controlled' }}
             />

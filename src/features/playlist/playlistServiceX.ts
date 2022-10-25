@@ -28,14 +28,7 @@ export async function updateIsPublicPlaylist(id: number): Promise<{ data: IPlayl
   const link = `/api/playlist/public/${id}`
   return await _axios.put(link)
 }
-export async function insertSongToPlaylist(data: IPlaylistInsertSong): Promise<{ data: IPlaylist }> {
-  const link = `/api/playlist/addSong`
-  return await _axios.post(link, data)
-}
-export async function remoteSongFromPlaylist(data: IPlaylistRemoveSong): Promise<{ data: string }> {
-  const link = `/api/playlist/removeSong`
-  return await _axios.put(link, data)
-}
+
 export async function updateSongInPlaylist(data: IPlaylistUpdateSong): Promise<{ data: IPlaylist }> {
   const link = `/api/playlist/addSong/admin`
   return await _axios.post(link, data, {

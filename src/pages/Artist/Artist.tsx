@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import classNames from 'classnames/bind'
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, Switch } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import { Delete, Edit } from '@mui/icons-material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { ETypeState, EStatusState } from '../../constants/common'
-import { getAllArtist, deleteArtist, artistStore, resetStatus } from '../../features/artist/artistSlice'
+import { ETypeState, EStatusState, TypeToggleIsDeleteModal } from '../../constants/common'
+import { getAllArtist, toggleIsDeleteArtist, artistStore, resetStatus } from '../../features/artist/artistSlice'
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { IArtist } from '../../Interfaces/store/IArtist'
 import { CommonHelper } from '../../utils/CommonHelper'
@@ -59,14 +59,18 @@ function Artist() {
           break
       }
     }
-    if (artistStoreType === ETypeState.Delete) {
+    if (artistStoreType === ETypeState.ToggleIsDelete) {
+      const title = `
+      ${toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa ca sĩ ' : 'Kích hoạt ca sĩ '} 
+      ${artist?.name}`
+
       switch (artistStoreStatus) {
         case EStatusState.Failed:
-          CommonHelper.showErrorMess(`Xóa ca sĩ ${artist?.name} thất bại`)
+          CommonHelper.showErrorMess(`${title} thất bại`)
           break
         case EStatusState.Success:
-          setOpenDeleteModal(false)
-          CommonHelper.showSuccessMess(`Xóa ca sĩ ${artist?.name} thành công`)
+          setOpenToggleIsDeleteModal(false)
+          CommonHelper.showSuccessMess(`${title} thành công`)
           dispatch(resetStatus())
           break
       }
@@ -79,10 +83,21 @@ function Artist() {
     { field: 'name', headerName: 'Tên ca sĩ', flex: 1 },
     { field: 'code', headerName: 'code', flex: 1 },
     {
-      field: 'isDeleted',
+      field: 'isDelete',
       headerName: 'Trạng thái',
-      flex: 1,
-      valueGetter: (params: GridRenderCellParams<IArtist>) => (params.row.isDeleted ? 'Đã xóa' : 'Hoạt động'),
+      headerAlign: 'center',
+      disableExport: true,
+      renderCell: (params: GridRenderCellParams<IArtist>) => {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Switch
+              checked={!params.row.isDeleted}
+              onChange={(e) => toggleSwitchIsDelete(e, params.row)}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+          </div>
+        )
+      },
     },
     {
       field: '_id',
@@ -95,9 +110,6 @@ function Artist() {
             <IconButton color="primary" onClick={() => clickUpdateButton(params.row)}>
               <Edit />
             </IconButton>
-            <IconButton disabled={params.row.isDeleted} onClick={() => clickDeleteButton(params.row)} color="error">
-              <Delete />
-            </IconButton>
           </div>
         )
       },
@@ -105,14 +117,20 @@ function Artist() {
   ]
 
   const [artist, setArtist] = useState<IArtist>()
-  // delete
-  const [openDeleteModal, setOpenDeleteModal] = useState(false)
-  const clickDeleteButton = (artistClicked: IArtist) => {
+  // isdelete
+  const [openToggleIsDeleteModal, setOpenToggleIsDeleteModal] = useState(false)
+  const [toggleIsDeleteModal, setToggleIsDeleteModal] = useState({
+    type: TypeToggleIsDeleteModal.Delete,
+    title: ``,
+  })
+  const toggleSwitchIsDelete = (event: ChangeEvent<HTMLInputElement>, artistClicked: IArtist) => {
     setArtist(artistClicked)
-    setOpenDeleteModal(true)
-  }
-  const handleDeleteArtist = () => {
-    dispatch(deleteArtist(artist?.id as number))
+    const isActive = event.target.checked
+    setOpenToggleIsDeleteModal(true)
+    setToggleIsDeleteModal({
+      title: isActive ? 'Kích hoạt ca sĩ ' : 'Xóa ca sĩ ',
+      type: isActive ? TypeToggleIsDeleteModal.Active : TypeToggleIsDeleteModal.Delete,
+    })
   }
   // create/update
   const [openCreateUpdateModal, setOpenCreateUpdateModal] = useState(false)
@@ -158,18 +176,22 @@ function Artist() {
         isUpdate={isUpdateModal}
       />
 
-      <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
+      <CustomizeModal title={`Xác nhận`} open={openToggleIsDeleteModal} setOpen={setOpenToggleIsDeleteModal}>
         <p>
-          Bạn chắc chắn muốn xóa ca sĩ{' '}
+          {toggleIsDeleteModal.title}
           <span className="danger-color" style={{ fontSize: '18px' }}>
             {artist?.name}
           </span>
           ?
         </p>
-
         <div className="bottom-button-group">
-          <Button size="small" variant="contained" color="error" onClick={handleDeleteArtist}>
-            Xóa
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={() => dispatch(toggleIsDeleteArtist(artist?.id as number))}
+          >
+            {toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa' : 'Kích hoạt'}
           </Button>
         </div>
       </CustomizeModal>

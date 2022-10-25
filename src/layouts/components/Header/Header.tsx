@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import classNames from 'classnames/bind'
 import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { appStore } from '../../../features/app/appSlice'
-import { ownerStore } from '../../../features/owner/ownerSlice'
+import { ownerStore, resetStatus } from '../../../features/owner/ownerSlice'
 import { ArrowDropDown } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
+import { routes } from '../../../routes'
 
 import images from '../../../assets/images'
 import styles from './Header.module.scss'
@@ -11,6 +13,9 @@ import { Avatar, Menu, MenuItem } from '@mui/material'
 import { IOwner } from '../../../Interfaces/store/IOwner'
 const cx = classNames.bind(styles)
 function Header() {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
   const app = useAppSelector(appStore)
   const owner = useAppSelector(ownerStore)
 
@@ -21,6 +26,10 @@ function Header() {
   }
   const handleClickUser = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+  const handleLogout = () => {
+    dispatch(resetStatus())
+    navigate(routes.login)
   }
 
   return (
@@ -33,8 +42,15 @@ function Header() {
           <Avatar alt="Cindy Baker" src="https://loremflickr.com/100/100" />
         </div>
       </div>
-      <Menu id="user-menu" aria-labelledby="user" anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
-        <MenuItem>Đăng xuất</MenuItem>
+      <Menu
+        id="user-menu"
+        aria-labelledby="user"
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
       </Menu>
       {/* 
       <Modal
