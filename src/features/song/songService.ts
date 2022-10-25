@@ -9,7 +9,7 @@ export async function getAllSong(): Promise<{ data: ISong[] }> {
   const link = '/api/song'
   return await _axios.get(link)
 }
-export async function deleteSong(id: number): Promise<{ data: ISong }> {
+export async function toggleIsDeleteSong(id: number): Promise<{ data: ISong }> {
   const link = `/api/song/delete/${id}`
   return await _axios.put(link)
 }

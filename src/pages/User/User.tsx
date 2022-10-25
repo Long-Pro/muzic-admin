@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import classNames from 'classnames/bind'
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, Switch } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import { Delete } from '@mui/icons-material'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { ETypeState, EStatusState } from '../../constants/common'
-import { getAllUser, deleteUser, userStore, resetStatus } from '../../features/user/userSlice'
+import { ETypeState, EStatusState, TypeToggleIsDeleteModal } from '../../constants/common'
+import { getAllUser, toggleIsDeleteUser, userStore, resetStatus } from '../../features/user/userSlice'
 import { updateHeaderTitle } from '../../features/app/appSlice'
 import { IUser } from '../../Interfaces/store/IUser'
 import { CommonHelper } from '../../utils/CommonHelper'
@@ -14,6 +14,7 @@ import { CommonHelper } from '../../utils/CommonHelper'
 import { CustomizeModal } from '../../components'
 import images from '../../assets/images'
 import styles from './User.module.scss'
+
 const cx = classNames.bind(styles)
 function User() {
   const dispatch = useAppDispatch()
@@ -34,14 +35,18 @@ function User() {
           break
       }
     }
-    if (userStoreType === ETypeState.Delete) {
+    if (userStoreType === ETypeState.ToggleIsDelete) {
+      const title = `
+      ${toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa người dùng ' : 'Kích hoạt người dùng '} 
+      ${user?.name}`
+
       switch (userStoreStatus) {
         case EStatusState.Failed:
-          CommonHelper.showErrorMess(`Xóa người dùng ${user?.name} thất bại`)
+          CommonHelper.showErrorMess(`${title} thất bại`)
           break
         case EStatusState.Success:
-          setShowDeleteModal(false)
-          CommonHelper.showSuccessMess(`Xóa người dùng ${user?.name} thành công`)
+          setOpenToggleIsDeleteModal(false)
+          CommonHelper.showSuccessMess(`${title} thành công`)
           dispatch(resetStatus())
           break
       }
@@ -52,12 +57,6 @@ function User() {
     { field: 'userId', headerName: 'Mã người dùng', flex: 1 },
     { field: 'name', headerName: 'Tên người dùng', flex: 1 },
     { field: 'username', headerName: 'Tài khoản', flex: 1 },
-    {
-      field: 'isDeleted',
-      headerName: 'Trạng thái',
-      flex: 1,
-      valueGetter: (params: GridRenderCellParams<IUser>) => (params.row.isDeleted ? 'Đã xóa' : 'Hoạt động'),
-    },
     {
       field: 'avatar',
       headerName: 'Ảnh đại diện',
@@ -72,16 +71,18 @@ function User() {
       },
     },
     {
-      field: '_id',
-      headerName: 'Thao tác',
+      field: 'isDelete',
+      headerName: 'Trạng thái',
       headerAlign: 'center',
       disableExport: true,
       renderCell: (params: GridRenderCellParams<IUser>) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <IconButton disabled={params.row.isDeleted} onClick={() => clickDeleteButton(params.row)} color="error">
-              <Delete />
-            </IconButton>
+            <Switch
+              checked={params.row.isDeleted}
+              onChange={(e) => toggleSwitchIsDelete(e, params.row)}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
           </div>
         )
       },
@@ -89,14 +90,20 @@ function User() {
   ]
 
   const [user, setUser] = useState<IUser>()
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const clickDeleteButton = (userClicked: IUser) => {
+  // isDelete
+  const [openToggleIsDeleteModal, setOpenToggleIsDeleteModal] = useState(false)
+  const [toggleIsDeleteModal, setToggleIsDeleteModal] = useState({
+    type: TypeToggleIsDeleteModal.Delete,
+    title: ``,
+  })
+  const toggleSwitchIsDelete = (event: ChangeEvent<HTMLInputElement>, userClicked: IUser) => {
     setUser(userClicked)
-    setShowDeleteModal(true)
-  }
-  const handleDeleteUser = () => {
-    setShowDeleteModal(false)
-    dispatch(deleteUser(user?.userId as number))
+    const isActive = event.target.checked
+    setOpenToggleIsDeleteModal(true)
+    setToggleIsDeleteModal({
+      title: isActive ? 'Kích hoạt người dùng ' : 'Xóa người dùng ',
+      type: isActive ? TypeToggleIsDeleteModal.Active : TypeToggleIsDeleteModal.Delete,
+    })
   }
 
   return (
@@ -118,17 +125,22 @@ function User() {
           />
         </Box>
       </div>
-      <CustomizeModal title={`Xác nhận`} open={showDeleteModal} setOpen={setShowDeleteModal}>
+      <CustomizeModal title={`Xác nhận`} open={openToggleIsDeleteModal} setOpen={setOpenToggleIsDeleteModal}>
         <p>
-          Bạn chắc chắn muốn xóa người dùng{' '}
-          <span className="danger-color" style={{ fontSize: '20px' }}>
+          {toggleIsDeleteModal.title}
+          <span className="danger-color" style={{ fontSize: '18px' }}>
             {user?.name}
           </span>
           ?
         </p>
         <div className="bottom-button-group">
-          <Button size="small" variant="contained" color="error" onClick={handleDeleteUser}>
-            Xóa
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={() => dispatch(toggleIsDeleteUser(user?.userId as number))}
+          >
+            {toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa' : 'Kích hoạt'}
           </Button>
         </div>
       </CustomizeModal>

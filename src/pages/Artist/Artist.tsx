@@ -161,7 +161,7 @@ function Artist() {
       <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa ca sĩ{' '}
-          <span className="danger-color" style={{ fontSize: '20px' }}>
+          <span className="danger-color" style={{ fontSize: '18px' }}>
             {artist?.name}
           </span>
           ?

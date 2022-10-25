@@ -133,15 +133,8 @@ function CreateUpdateSongModal({ song, open, setOpen, isUpdate }: IProp) {
   }
   const chooseFile = (e: any) => {
     const key = e.target.dataset['key']
-    // console.log({ key, file: e.target.value })\
-    console.log({ key, file: e.target })
-
     setFormDataValue({ ...formDataValue, [key]: e.target.files[0] })
-    //setFormDataValue({ ...formDataValue, [key]: e.target.value })
   }
-  useEffect(() => {
-    console.log(formDataValue)
-  }, [formDataValue])
   return (
     <CustomizeModal open={open} setOpen={setOpen} title={title}>
       <div className={cx('field-wrapper')}>

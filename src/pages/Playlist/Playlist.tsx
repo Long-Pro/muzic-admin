@@ -110,6 +110,19 @@ function Playlist() {
     { field: 'name', headerName: 'Tên', flex: 1 },
     { field: 'userName', headerName: 'Người tạo', flex: 1 },
     {
+      field: 'thumbnail',
+      headerName: 'Ảnh',
+      headerAlign: 'center',
+      disableExport: true,
+      renderCell: (params: GridRenderCellParams<IPlaylist>) => {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <img src={params.row.thumbnail} alt="" width={50} height={40} />
+          </div>
+        )
+      },
+    },
+    {
       field: 'isPublic',
       headerName: 'Trạng thái',
       flex: 1,
@@ -220,7 +233,7 @@ function Playlist() {
       <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
         <p>
           Bạn chắc chắn muốn xóa playlist{' '}
-          <span className="danger-color" style={{ fontSize: '20px' }}>
+          <span className="danger-color" style={{ fontSize: '18px' }}>
             {playlist?.name}
           </span>
           ?

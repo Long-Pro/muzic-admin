@@ -9,6 +9,7 @@ export enum ETypeState {
   Get,
   Update,
   Delete,
+  ToggleIsDelete,
 }
 export enum ETypePlaylistState {
   Create = 1,
@@ -20,4 +21,8 @@ export enum ETypePlaylistState {
   RemoteSongFromPlaylist,
   InsertSongToPlaylist,
   UpdateSongInPlaylist,
+}
+export enum TypeToggleIsDeleteModal {
+  Delete = 1,
+  Active,
 }

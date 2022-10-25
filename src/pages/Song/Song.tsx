@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import classNames from 'classnames/bind'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 
 import { updateHeaderTitle } from '../../features/app/appSlice'
-import { getAllSong, deleteSong, songStore, resetStatus } from '../../features/song/songSlice'
+import { getAllSong, toggleIsDeleteSong, songStore, resetStatus } from '../../features/song/songSlice'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 
 import { CommonHelper } from '../../utils/CommonHelper'
 import images from '../../assets/images'
 import styles from './Song.module.scss'
 import { ISong } from '../../Interfaces/store/ISong'
-import { ETypeState, EStatusState } from '../../constants/common'
+import { ETypeState, EStatusState, TypeToggleIsDeleteModal } from '../../constants/common'
 import {
   Autocomplete,
   Box,
@@ -23,6 +23,7 @@ import {
   SelectChangeEvent,
   TextField,
   IconButton,
+  Switch,
 } from '@mui/material'
 import { Visibility, Edit, Delete } from '@mui/icons-material'
 import CreateUpdateSongModal from './CreateUpdateSongModal/CreateUpdateSongModal'
@@ -73,14 +74,18 @@ function Song() {
           break
       }
     }
-    if (songStoreType === ETypeState.Delete) {
+    if (songStoreType === ETypeState.ToggleIsDelete) {
+      const title = `
+      ${toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa bài hát ' : 'Kích hoạt bài hát '} 
+      ${song?.name}`
+
       switch (songStoreStatus) {
         case EStatusState.Failed:
-          CommonHelper.showErrorMess(`Xóa bài hát ${song?.name} thất bại`)
+          CommonHelper.showErrorMess(`${title} thất bại`)
           break
         case EStatusState.Success:
-          setOpenDeleteModal(false)
-          CommonHelper.showSuccessMess(`Xóa bài hát ${song?.name} thành công`)
+          setOpenToggleIsDeleteModal(false)
+          CommonHelper.showSuccessMess(`${title} thành công`)
           dispatch(resetStatus())
           break
       }
@@ -109,11 +114,23 @@ function Song() {
       },
     },
     {
-      field: 'isDeleted',
+      field: 'isDelete',
       headerName: 'Trạng thái',
-      flex: 1,
-      valueGetter: (params: GridRenderCellParams<ISong>) => (params.row.isDeleted ? 'Đã xóa' : 'Hoạt động'),
+      headerAlign: 'center',
+      disableExport: true,
+      renderCell: (params: GridRenderCellParams<ISong>) => {
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Switch
+              checked={params.row.isDeleted}
+              onChange={(e) => toggleSwitchIsDelete(e, params.row)}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+          </div>
+        )
+      },
     },
+
     {
       field: '_id',
       headerName: 'Thao tác',
@@ -130,10 +147,6 @@ function Song() {
             <IconButton color="primary" onClick={() => clickUpdateButton(params.row)}>
               <Edit />
             </IconButton>
-
-            <IconButton disabled={params.row.isDeleted} onClick={() => clickDeleteButton(params.row)} color="error">
-              <Delete />
-            </IconButton>
           </div>
         )
       },
@@ -141,14 +154,21 @@ function Song() {
   ]
 
   const [song, setSong] = useState<ISong>()
-  // delete
-  const [openDeleteModal, setOpenDeleteModal] = useState(false)
-  const clickDeleteButton = (songClicked: ISong) => {
+  // isdelete
+  const [openToggleIsDeleteModal, setOpenToggleIsDeleteModal] = useState(false)
+  const [toggleIsDeleteModal, setToggleIsDeleteModal] = useState({
+    type: TypeToggleIsDeleteModal.Delete,
+    title: ``,
+  })
+
+  const toggleSwitchIsDelete = (event: ChangeEvent<HTMLInputElement>, songClicked: ISong) => {
     setSong(songClicked)
-    setOpenDeleteModal(true)
-  }
-  const handleDeleteSong = () => {
-    dispatch(deleteSong(song?.songId as number))
+    const isActive = event.target.checked
+    setOpenToggleIsDeleteModal(true)
+    setToggleIsDeleteModal({
+      title: isActive ? 'Kích hoạt bài hát ' : 'Xóa bài hát ',
+      type: isActive ? TypeToggleIsDeleteModal.Active : TypeToggleIsDeleteModal.Delete,
+    })
   }
   // create/update
   const [openCreateUpdateModal, setOpenCreateUpdateModal] = useState(false)
@@ -194,18 +214,22 @@ function Song() {
         isUpdate={isUpdateModal}
       />
 
-      <CustomizeModal title={`Xác nhận`} open={openDeleteModal} setOpen={setOpenDeleteModal}>
+      <CustomizeModal title={`Xác nhận`} open={openToggleIsDeleteModal} setOpen={setOpenToggleIsDeleteModal}>
         <p>
-          Bạn chắc chắn muốn xóa bài hát{' '}
-          <span className="danger-color" style={{ fontSize: '20px' }}>
+          {toggleIsDeleteModal.title}
+          <span className="danger-color" style={{ fontSize: '18px' }}>
             {song?.name}
           </span>
           ?
         </p>
-
         <div className="bottom-button-group">
-          <Button size="small" variant="contained" color="error" onClick={handleDeleteSong}>
-            Xóa
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            onClick={() => dispatch(toggleIsDeleteSong(song?.songId as number))}
+          >
+            {toggleIsDeleteModal.type === TypeToggleIsDeleteModal.Delete ? 'Xóa' : 'Kích hoạt'}
           </Button>
         </div>
       </CustomizeModal>

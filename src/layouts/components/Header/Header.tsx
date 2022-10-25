@@ -34,7 +34,6 @@ function Header() {
         </div>
       </div>
       <Menu id="user-menu" aria-labelledby="user" anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
-        <MenuItem>Đổi mật khẩu</MenuItem>
         <MenuItem>Đăng xuất</MenuItem>
       </Menu>
       {/* 
