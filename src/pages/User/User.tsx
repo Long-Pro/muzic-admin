@@ -70,23 +70,23 @@ function User() {
         )
       },
     },
-    {
-      field: 'isDelete',
-      headerName: 'Trạng thái',
-      headerAlign: 'center',
-      disableExport: true,
-      renderCell: (params: GridRenderCellParams<IUser>) => {
-        return (
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <Switch
-              checked={!params.row.isDeleted}
-              onChange={(e) => toggleSwitchIsDelete(e, params.row)}
-              inputProps={{ 'aria-label': 'controlled' }}
-            />
-          </div>
-        )
-      },
-    },
+    // {
+    //   field: 'isDelete',
+    //   headerName: 'Trạng thái',
+    //   headerAlign: 'center',
+    //   disableExport: true,
+    //   renderCell: (params: GridRenderCellParams<IUser>) => {
+    //     return (
+    //       <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+    //         <Switch
+    //           checked={!params.row.isDeleted}
+    //           onChange={(e) => toggleSwitchIsDelete(e, params.row)}
+    //           inputProps={{ 'aria-label': 'controlled' }}
+    //         />
+    //       </div>
+    //     )
+    //   },
+    // },
   ]
 
   const [user, setUser] = useState<IUser>()
